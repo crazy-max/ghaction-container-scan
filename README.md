@@ -16,12 +16,15 @@ of this action in your workflow.
 GitHub Action to check for vulnerabilities in your Docker image with
 [Trivy](https://github.com/aquasecurity/trivy).
 
+![Screenshot](.github/scan-action.png)
+
 ___
 
 * [Usage](#usage)
   * [Scan image](#scan-image)
   * [Scan tarball](#scan-tarball)
   * [Upload to GitHub Code Scanning](#upload-to-github-code-scanning)
+  * [Create GitHub annotations](#upload-to-github-code-scanning)
   * [Build, scan and push your image](#build-scan-and-push-your-image)
 * [Customizing](#customizing)
   * [inputs](#inputs)
@@ -89,6 +92,40 @@ jobs:
         with:
           tarball: /tmp/image.tar
 ```
+
+### Create GitHub annotations
+
+This action is also able to create GitHub annotations in your workflow for
+vulnerabilities discovered:
+
+```yaml
+name: ci
+
+on:
+  push:
+
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    steps:
+      -
+        name: Checkout
+        uses: actions/checkout@v2
+      -
+        name: Build
+        uses: docker/build-push-action@v2
+        with:
+          push: true
+          tags: user/app:latest
+      -
+        name: Scan for vulnerabilities
+        uses: crazy-max/docker-scan-action@master
+        with:
+          image: user/app:latest
+          annotations: true
+```
+
+![GitHub annotations](.github/annotations.png)
 
 ### Upload to GitHub Code Scanning
 
