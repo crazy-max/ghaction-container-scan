@@ -11,9 +11,13 @@ GitHub Action to check for vulnerabilities in your Docker image.
 ___
 
 * [Usage](#usage)
+  * [Scan image](#scan-image)
+  * [Scan tarball](#scan-tarball)
 * [Keep up-to-date with GitHub Dependabot](#keep-up-to-date-with-github-dependabot)
 
 ## Usage
+
+### Scan image
 
 ```yaml
 name: ci
@@ -35,10 +39,38 @@ jobs:
           push: true
           tags: user/app:latest
       -
-        name: Check for vulnerabilities
+        name: Scan for vulnerabilities
         uses: crazy-max/docker-scan-action@master
         with:
           image: user/app:latest
+```
+
+### Scan tarball
+
+```yaml
+name: ci
+
+on:
+  push:
+
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    steps:
+      -
+        name: Checkout
+        uses: actions/checkout@v2
+      -
+        name: Build
+        uses: docker/build-push-action@v2
+        with:
+          outputs: type=oci,dest=/tmp/image.tar
+          tags: user/app:latest
+      -
+        name: Scan for vulnerabilities
+        uses: crazy-max/docker-scan-action@master
+        with:
+          tarball: /tmp/image.tar
 ```
 
 ## Keep up-to-date with GitHub Dependabot

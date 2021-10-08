@@ -15,24 +15,49 @@ on:
       - 'releases/v*'
 
 jobs:
-  simple:
+  image:
     runs-on: ubuntu-latest
     steps:
       -
         name: Checkout
         uses: actions/checkout@v2
       -
-        name: Scan
+        name: Scan for vulnerabilities
         id: scan
         uses: ./
         with:
           image: alpine:3.9
-          annotations: true
 #      -
 #        name: Upload scan results to GitHub Security tab
 #        uses: github/codeql-action/upload-sarif@v1
 #        with:
 #          sarif_file: ${{ steps.scan.outputs.sarif }}
+      -
+        name: Dump context
+        uses: crazy-max/ghaction-dump-context@v1
+
+  tarball:
+    runs-on: ubuntu-latest
+    steps:
+      -
+        name: Checkout
+        uses: actions/checkout@v2
+      -
+        name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+      -
+        name: Build
+        uses: docker/build-push-action@v2
+        with:
+          context: ./test
+          outputs: type=oci,dest=/tmp/image.tar
+          tags: name/app:latest
+      -
+        name: Scan for vulnerabilities
+        id: scan
+        uses: ./
+        with:
+          tarball: /tmp/image.tar
       -
         name: Dump context
         uses: crazy-max/ghaction-dump-context@v1
