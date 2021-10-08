@@ -1,0 +1,38 @@
+name: ci
+
+on:
+  schedule:
+    - cron: '0 10 * * *' # everyday at 10am
+  push:
+    branches:
+      - 'master'
+      - 'releases/v*'
+    tags:
+      - 'v*'
+  pull_request:
+    branches:
+      - 'master'
+      - 'releases/v*'
+
+jobs:
+  simple:
+    runs-on: ubuntu-latest
+    steps:
+      -
+        name: Checkout
+        uses: actions/checkout@v2
+      -
+        name: Scan
+        id: scan
+        uses: ./
+        with:
+          image: alpine:3.9
+          annotations: true
+#      -
+#        name: Upload scan results to GitHub Security tab
+#        uses: github/codeql-action/upload-sarif@v1
+#        with:
+#          sarif_file: ${{ steps.scan.outputs.sarif }}
+      -
+        name: Dump context
+        uses: crazy-max/ghaction-dump-context@v1

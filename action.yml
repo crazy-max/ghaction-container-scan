@@ -1,0 +1,41 @@
+# https://help.github.com/en/articles/metadata-syntax-for-github-actions
+name: 'Docker Scan'
+description: 'Check for vulnerabilities in your Docker image'
+author: 'docker'
+branding:
+  icon: 'anchor'
+  color: 'blue'
+
+inputs:
+  trivy_version:
+    description: 'Trivy CLI version (eg. v0.20.0)'
+    default: 'latest'
+    required: false
+  image:
+    description: 'Docker image to scan (eg. alpine:3.7)'
+    required: false
+  tarball:
+    description: 'Docker image tarball path to scan'
+    required: false
+  severity:
+    description: 'Report vulnerabilities of provided level or higher (default: UNKNOWN,LOW,MEDIUM,HIGH,CRITICAL)'
+    required: false
+  annotations:
+    description: 'Set GitHub annotations in your workflow for vulnerabilities discovered'
+    default: 'false'
+    required: false
+  github_token:
+    description: 'GitHub Token as provided by secrets'
+    default: ${{ github.token }}
+    required: false
+
+outputs:
+  json:
+    description: 'JSON format scan result'
+  sarif:
+    description: 'SARIF format scan result'
+
+runs:
+  using: 'node12'
+  main: 'dist/index.js'
+  post: 'dist/index.js'
