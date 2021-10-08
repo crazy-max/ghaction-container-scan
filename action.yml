@@ -21,7 +21,7 @@ inputs:
     description: 'Report vulnerabilities of provided level or higher (default: UNKNOWN,LOW,MEDIUM,HIGH,CRITICAL)'
     required: false
   annotations:
-    description: 'Set GitHub annotations in your workflow for vulnerabilities discovered'
+    description: 'Create GitHub annotations in your workflow for vulnerabilities discovered'
     default: 'false'
     required: false
   github_token:

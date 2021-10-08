@@ -21,6 +21,11 @@ ___
 * [Usage](#usage)
   * [Scan image](#scan-image)
   * [Scan tarball](#scan-tarball)
+  * [Upload to GitHub Code Scanning](#upload-to-github-code-scanning)
+  * [Build, scan and push your image](#build-scan-and-push-your-image)
+* [Customizing](#customizing)
+  * [inputs](#inputs)
+  * [outputs](#outputs)
 * [Keep up-to-date with GitHub Dependabot](#keep-up-to-date-with-github-dependabot)
 
 ## Usage
@@ -76,7 +81,7 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           context: .
-          outputs: type=docker,dest=/tmp/image.tar
+          outputs: type=oci,dest=/tmp/image.tar
           tags: user/app:latest
       -
         name: Scan for vulnerabilities
@@ -84,6 +89,111 @@ jobs:
         with:
           tarball: /tmp/image.tar
 ```
+
+### Upload to GitHub Code Scanning
+
+This action also supports the [SARIF format](https://docs.github.com/en/code-security/code-scanning/integrating-with-code-scanning/uploading-a-sarif-file-to-github)
+for integration with [GitHub Code Scanning](https://docs.github.com/en/github/finding-security-vulnerabilities-and-errors-in-your-code/about-code-scanning)
+to show issues in the [GitHub Security](https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/enabling-features-for-your-repository/managing-security-and-analysis-settings-for-your-repository)
+tab:
+
+```yaml
+name: ci
+
+on:
+  push:
+
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    steps:
+      -
+        name: Checkout
+        uses: actions/checkout@v2
+      -
+        name: Build
+        uses: docker/build-push-action@v2
+        with:
+          push: true
+          tags: user/app:latest
+      -
+        name: Scan for vulnerabilities
+        id: scan
+        uses: crazy-max/docker-scan-action@master
+        with:
+          image: user/app:latest
+      -
+        name: Upload SARIF file
+        uses: github/codeql-action/upload-sarif@v1
+        with:
+          sarif_file: ${{ steps.scan.outputs.sarif }}
+```
+
+### Build, scan and push your image
+
+```yaml
+name: ci
+
+on:
+  push:
+
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    steps:
+      -
+        name: Checkout
+        uses: actions/checkout@v2
+      -
+        name: Set up QEMU
+        uses: docker/setup-qemu-action@v1
+      -
+        name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+      -
+        name: Build for scan
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          load: true
+          tags: user/app:latest
+      -
+        name: Scan for vulnerabilities
+        uses: crazy-max/docker-scan-action@master
+        with:
+          tarball: user/app:latest
+      -
+        name: Build multi-platform and push
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          platforms: linux/amd64,linux/arm64
+          push: true
+          tags: user/app:latest
+```
+
+## Customizing
+
+### inputs
+
+Following inputs can be used as `step.with` keys
+
+| Name             | Type     | Description                        |
+|------------------|----------|------------------------------------|
+| `trivy_version`  | String   | [Trivy CLI](https://github.com/aquasecurity/trivy) version (default `latest`) |
+| `image`          | String   | Docker image to scan (e.g. `alpine:3.7`) |
+| `tarball`        | String   | Docker image tarball path to scan |
+| `severity`       | String   | Report vulnerabilities of provided level or higher (default: `UNKNOWN,LOW,MEDIUM,HIGH,CRITICAL`) |
+| `annotations`    | Bool     | Create GitHub annotations in your workflow for vulnerabilities discovered |
+
+### outputs
+
+Following outputs are available
+
+| Name              | Type    | Description                           |
+|-------------------|---------|---------------------------------------|
+| `json`            | File    | JSON format scan result |
+| `sarif`           | File    | SARIF format scan result |
 
 ## Keep up-to-date with GitHub Dependabot
 
