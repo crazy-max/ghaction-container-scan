@@ -50,8 +50,8 @@ describe('install', () => {
 });
 
 describe('scan', () => {
-  it('scans alpine:3.7 image', async () => {
-    process.env[`INPUT_IMAGE`] = 'alpine:3.7';
+  it('scans alpine:3.9 image', async () => {
+    process.env[`INPUT_IMAGE`] = 'alpine:3.9';
     process.env[`INPUT_ANNOTATIONS`] = 'false';
     const trivyBin = await trivy.install('latest');
     expect(fs.existsSync(trivyBin)).toBe(true);
@@ -59,5 +59,6 @@ describe('scan', () => {
     expect(scanResult.table).not.toBeUndefined();
     expect(scanResult.json).not.toBeUndefined();
     expect(scanResult.sarif).not.toBeUndefined();
+    expect(scanResult.vulns).not.toBeUndefined();
   }, 500000);
 });

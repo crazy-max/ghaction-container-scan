@@ -20,6 +20,9 @@ inputs:
   severity:
     description: 'Report vulnerabilities of provided level or higher (default: UNKNOWN,LOW,MEDIUM,HIGH,CRITICAL)'
     required: false
+  severity_threshold:
+    description: 'Defines threshold for severity'
+    required: false
   annotations:
     description: 'Create GitHub annotations in your workflow for vulnerabilities discovered'
     default: 'false'

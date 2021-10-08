@@ -38,7 +38,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.setOutput = exports.getInputs = exports.tmpNameSync = exports.tmpDir = exports.osArch = exports.osPlat = void 0;
+exports.setOutput = exports.asyncForEach = exports.getInputs = exports.tmpNameSync = exports.tmpDir = exports.osArch = exports.osPlat = void 0;
 const fs_1 = __importDefault(__nccwpck_require__(5747));
 const os = __importStar(__nccwpck_require__(2087));
 const path_1 = __importDefault(__nccwpck_require__(5622));
@@ -66,12 +66,19 @@ function getInputs() {
             image: core.getInput('image'),
             tarball: core.getInput('tarball'),
             severity: core.getInput('severity'),
+            severityThreshold: core.getInput('severity_threshold'),
             annotations: core.getBooleanInput('annotations'),
             githubToken: core.getInput('github_token')
         };
     });
 }
 exports.getInputs = getInputs;
+const asyncForEach = (array, callback) => __awaiter(void 0, void 0, void 0, function* () {
+    for (let index = 0; index < array.length; index++) {
+        yield callback(array[index], index, array);
+    }
+});
+exports.asyncForEach = asyncForEach;
 // FIXME: Temp fix https://github.com/actions/toolkit/issues/777
 function setOutput(name, value) {
     (0, command_1.issueCommand)('set-output', { name }, value);
@@ -115,8 +122,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.setAnnotations = exports.getRelease = void 0;
-const core = __importStar(__nccwpck_require__(2186));
+exports.getRelease = void 0;
 const httpm = __importStar(__nccwpck_require__(9925));
 const getRelease = (version) => __awaiter(void 0, void 0, void 0, function* () {
     const url = `https://github.com/aquasecurity/trivy/releases/${version}`;
@@ -124,23 +130,6 @@ const getRelease = (version) => __awaiter(void 0, void 0, void 0, function* () {
     return (yield http.getJson(url)).result;
 });
 exports.getRelease = getRelease;
-function setAnnotations(jsonOutput) {
-    return __awaiter(this, void 0, void 0, function* () {
-        const jsonRep = JSON.parse(jsonOutput);
-        if (jsonRep.Results.length == 0) {
-            return;
-        }
-        for (const result of jsonRep.Results) {
-            if (result.Vulnerabilities.length == 0) {
-                continue;
-            }
-            for (const vuln of result.Vulnerabilities) {
-                core.warning(`(${vuln.VulnerabilityID}) ${vuln.Severity} severity - ${vuln.Title} vulnerability in ${vuln.PkgName}`);
-            }
-        }
-    });
-}
-exports.setAnnotations = setAnnotations;
 //# sourceMappingURL=github.js.map
 
 /***/ }),
@@ -184,7 +173,6 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 const fs_1 = __importDefault(__nccwpck_require__(5747));
 const context = __importStar(__nccwpck_require__(3842));
-const github = __importStar(__nccwpck_require__(5928));
 const trivy = __importStar(__nccwpck_require__(9696));
 const stateHelper = __importStar(__nccwpck_require__(8647));
 const core = __importStar(__nccwpck_require__(2186));
@@ -195,6 +183,14 @@ function run() {
             if (!inputs.image && !inputs.tarball) {
                 core.setFailed('image or tarball input required');
                 return;
+            }
+            let severityThreshold = undefined;
+            if (inputs.severityThreshold) {
+                severityThreshold = trivy.SeverityName.get(inputs.severityThreshold);
+                if (severityThreshold === undefined) {
+                    core.setFailed(`severity ${inputs.severityThreshold} does not exist`);
+                    return;
+                }
             }
             let trivyBin;
             yield core.group(`Download and install trivy`, () => __awaiter(this, void 0, void 0, function* () {
@@ -207,7 +203,7 @@ function run() {
             else {
                 scanInput = inputs.tarball;
             }
-            let scanResult;
+            let scanResult = {};
             yield core.group(`Scanning ${scanInput} Docker image`, () => __awaiter(this, void 0, void 0, function* () {
                 scanResult = yield trivy.scan(trivyBin, inputs);
                 context.setOutput('json', scanResult.json);
@@ -228,12 +224,56 @@ function run() {
                     core.info(fs_1.default.readFileSync(scanResult.sarif, { encoding: 'utf-8' }).trim());
                 }
             }));
-            if (inputs.annotations) {
-                yield core.group(`Generating GitHub annotations`, () => __awaiter(this, void 0, void 0, function* () {
-                    if (scanResult.json) {
-                        yield github.setAnnotations(fs_1.default.readFileSync(scanResult.json, { encoding: 'utf-8' }).trim());
+            let unhealthy = [];
+            let vulns = new Map();
+            if (scanResult.vulns) {
+                yield context.asyncForEach(scanResult.vulns, (vuln) => __awaiter(this, void 0, void 0, function* () {
+                    const vulnSeverity = trivy.SeverityName.get(vuln.Severity);
+                    const vulnMsg = `${vuln.VulnerabilityID}) ${vuln.Severity} severity - ${vuln.Title} vulnerability in ${vuln.PkgName}`;
+                    if (vulnSeverity) {
+                        vulns.set(vulnSeverity, vulnMsg);
+                        if (severityThreshold && vulnSeverity >= severityThreshold) {
+                            unhealthy.push(vulnMsg);
+                        }
                     }
                 }));
+            }
+            if (vulns.size > 0 && inputs.annotations) {
+                yield core.group(`Generating GitHub annotations`, () => __awaiter(this, void 0, void 0, function* () {
+                    yield context.asyncForEach(vulns, (vuln) => __awaiter(this, void 0, void 0, function* () {
+                        switch (vuln.key) {
+                            case trivy.Severity.Unknown: {
+                                core.notice(vuln.value);
+                                break;
+                            }
+                            case trivy.Severity.Low: {
+                                core.info(vuln.value);
+                                break;
+                            }
+                            case trivy.Severity.Medium: {
+                                core.warning(vuln.value);
+                                break;
+                            }
+                            case trivy.Severity.High: {
+                                core.error(vuln.value);
+                                break;
+                            }
+                            case trivy.Severity.Critical: {
+                                core.error(vuln.value);
+                                break;
+                            }
+                        }
+                    }));
+                }));
+            }
+            if (unhealthy.length > 0) {
+                yield core.group(`Checking severities`, () => __awaiter(this, void 0, void 0, function* () {
+                    yield context.asyncForEach(unhealthy, (msg) => __awaiter(this, void 0, void 0, function* () {
+                        core.info(`  • ${msg}`);
+                    }));
+                }));
+                core.setFailed(`Docker image is unhealthy. Following your criteria, the job has been marked as failed.`);
+                return;
             }
         }
         catch (error) {
@@ -324,11 +364,19 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __asyncValues = (this && this.__asyncValues) || function (o) {
+    if (!Symbol.asyncIterator) throw new TypeError("Symbol.asyncIterator is not defined.");
+    var m = o[Symbol.asyncIterator], i;
+    return m ? m.call(o) : (o = typeof __values === "function" ? __values(o) : o[Symbol.iterator](), i = {}, verb("next"), verb("throw"), verb("return"), i[Symbol.asyncIterator] = function () { return this; }, i);
+    function verb(n) { i[n] = o[n] && function (v) { return new Promise(function (resolve, reject) { v = o[n](v), settle(resolve, reject, v.done, v.value); }); }; }
+    function settle(resolve, reject, d, v) { Promise.resolve(v).then(function(v) { resolve({ value: v, done: d }); }, reject); }
+};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.install = exports.satisfies = exports.parseVersion = exports.getVersion = exports.scan = exports.ScanFormat = void 0;
+exports.install = exports.satisfies = exports.parseVersion = exports.getVersion = exports.scan = exports.getSeverityName = exports.SeverityName = exports.Severity = exports.ScanFormat = void 0;
+const fs_1 = __importDefault(__nccwpck_require__(5747));
 const path = __importStar(__nccwpck_require__(5622));
 const semver = __importStar(__nccwpck_require__(1383));
 const util = __importStar(__nccwpck_require__(1669));
@@ -337,23 +385,84 @@ const github = __importStar(__nccwpck_require__(5928));
 const core = __importStar(__nccwpck_require__(2186));
 const exec = __importStar(__nccwpck_require__(1514));
 const tc = __importStar(__nccwpck_require__(7784));
-const fs_1 = __importDefault(__nccwpck_require__(5747));
 var ScanFormat;
 (function (ScanFormat) {
     ScanFormat["Table"] = "table";
     ScanFormat["Json"] = "json";
     ScanFormat["Sarif"] = "sarif";
 })(ScanFormat = exports.ScanFormat || (exports.ScanFormat = {}));
+var Severity;
+(function (Severity) {
+    Severity[Severity["Unknown"] = 0] = "Unknown";
+    Severity[Severity["Low"] = 1] = "Low";
+    Severity[Severity["Medium"] = 2] = "Medium";
+    Severity[Severity["High"] = 3] = "High";
+    Severity[Severity["Critical"] = 4] = "Critical";
+})(Severity = exports.Severity || (exports.Severity = {}));
+exports.SeverityName = new Map([
+    ['UNKNOWN', Severity.Unknown],
+    ['LOW', Severity.Low],
+    ['MEDIUM', Severity.Medium],
+    ['HIGH', Severity.High],
+    ['CRITICAL', Severity.Critical]
+]);
+const getSeverityName = (status) => __awaiter(void 0, void 0, void 0, function* () {
+    var e_1, _a;
+    try {
+        for (var SeverityName_1 = __asyncValues(exports.SeverityName), SeverityName_1_1; SeverityName_1_1 = yield SeverityName_1.next(), !SeverityName_1_1.done;) {
+            let [key, val] = SeverityName_1_1.value;
+            if (val == status)
+                return key;
+        }
+    }
+    catch (e_1_1) { e_1 = { error: e_1_1 }; }
+    finally {
+        try {
+            if (SeverityName_1_1 && !SeverityName_1_1.done && (_a = SeverityName_1.return)) yield _a.call(SeverityName_1);
+        }
+        finally { if (e_1) throw e_1.error; }
+    }
+});
+exports.getSeverityName = getSeverityName;
 function scan(bin, inputs) {
     return __awaiter(this, void 0, void 0, function* () {
+        const tableFile = yield scanTable(bin, inputs);
+        const jsonFile = yield scanJson(bin, inputs);
+        const sarifFile = yield scanSarif(bin, inputs);
+        const report = JSON.parse(fs_1.default.readFileSync(jsonFile, { encoding: 'utf-8' }).trim());
+        let vulns = [];
+        if (report.Results.length > 0) {
+            for (const result of report.Results) {
+                if (result.Vulnerabilities.length == 0) {
+                    continue;
+                }
+                vulns.push(...result.Vulnerabilities);
+            }
+        }
         return {
-            table: yield scanFormat(ScanFormat.Table, bin, inputs, false),
-            json: yield scanFormat(ScanFormat.Json, bin, inputs, true),
-            sarif: yield scanFormat(ScanFormat.Sarif, bin, inputs, true)
+            table: tableFile,
+            json: jsonFile,
+            sarif: sarifFile,
+            vulns: vulns
         };
     });
 }
 exports.scan = scan;
+function scanTable(bin, inputs) {
+    return __awaiter(this, void 0, void 0, function* () {
+        return scanFormat(ScanFormat.Table, bin, inputs, false);
+    });
+}
+function scanJson(bin, inputs) {
+    return __awaiter(this, void 0, void 0, function* () {
+        return yield scanFormat(ScanFormat.Json, bin, inputs, true);
+    });
+}
+function scanSarif(bin, inputs) {
+    return __awaiter(this, void 0, void 0, function* () {
+        return yield scanFormat(ScanFormat.Sarif, bin, inputs, true);
+    });
+}
 function scanFormat(format, bin, inputs, silent) {
     return __awaiter(this, void 0, void 0, function* () {
         const resFile = path.join(context.tmpDir(), `result.${format}`).split(path.sep).join(path.posix.sep);

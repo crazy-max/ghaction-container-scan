@@ -215,13 +215,14 @@ jobs:
 
 Following inputs can be used as `step.with` keys
 
-| Name             | Type     | Description                        |
-|------------------|----------|------------------------------------|
-| `trivy_version`  | String   | [Trivy CLI](https://github.com/aquasecurity/trivy) version (default `latest`) |
-| `image`          | String   | Docker image to scan (e.g. `alpine:3.7`) |
-| `tarball`        | String   | Docker image tarball path to scan |
-| `severity`       | String   | Report vulnerabilities of provided level or higher (default: `UNKNOWN,LOW,MEDIUM,HIGH,CRITICAL`) |
-| `annotations`    | Bool     | Create GitHub annotations in your workflow for vulnerabilities discovered |
+| Name                   | Type     | Description                        |
+|------------------------|----------|------------------------------------|
+| `trivy_version`        | String   | [Trivy CLI](https://github.com/aquasecurity/trivy) version (default `latest`) |
+| `image`                | String   | Docker image to scan (e.g. `alpine:3.7`) |
+| `tarball`              | String   | Docker image tarball path to scan |
+| `severity`             | String   | Report vulnerabilities of provided level or higher (default: `UNKNOWN,LOW,MEDIUM,HIGH,CRITICAL`) |
+| `severity_threshold`   | String   | Defines threshold for severity |
+| `annotations`          | Bool     | Create GitHub annotations in your workflow for vulnerabilities discovered |
 
 ### outputs
 

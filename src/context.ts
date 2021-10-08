@@ -25,6 +25,7 @@ export interface Inputs {
   image: string;
   tarball: string;
   severity: string;
+  severityThreshold: string;
   annotations: boolean;
   githubToken: string;
 }
@@ -35,10 +36,17 @@ export async function getInputs(): Promise<Inputs> {
     image: core.getInput('image'),
     tarball: core.getInput('tarball'),
     severity: core.getInput('severity'),
+    severityThreshold: core.getInput('severity_threshold'),
     annotations: core.getBooleanInput('annotations'),
     githubToken: core.getInput('github_token')
   };
 }
+
+export const asyncForEach = async (array, callback) => {
+  for (let index = 0; index < array.length; index++) {
+    await callback(array[index], index, array);
+  }
+};
 
 // FIXME: Temp fix https://github.com/actions/toolkit/issues/777
 export function setOutput(name: string, value: any): void {

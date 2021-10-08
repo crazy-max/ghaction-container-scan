@@ -1,17 +1,19 @@
+import fs from 'fs';
 import * as path from 'path';
 import * as semver from 'semver';
 import * as util from 'util';
 import * as context from './context';
 import * as github from './github';
+import {JSONReport, Vulnerability} from './trivy-report';
 import * as core from '@actions/core';
 import * as exec from '@actions/exec';
 import * as tc from '@actions/tool-cache';
-import fs from 'fs';
 
 export type ScanResult = {
   table?: string;
   json?: string;
   sarif?: string;
+  vulns?: Vulnerability[];
 };
 
 export enum ScanFormat {
@@ -20,12 +22,60 @@ export enum ScanFormat {
   Sarif = 'sarif'
 }
 
+export enum Severity {
+  Unknown,
+  Low,
+  Medium,
+  High,
+  Critical
+}
+
+export const SeverityName = new Map<string, Severity>([
+  ['UNKNOWN', Severity.Unknown],
+  ['LOW', Severity.Low],
+  ['MEDIUM', Severity.Medium],
+  ['HIGH', Severity.High],
+  ['CRITICAL', Severity.Critical]
+]);
+
+export const getSeverityName = async (status: Severity): Promise<string | undefined> => {
+  for await (let [key, val] of SeverityName) {
+    if (val == status) return key;
+  }
+};
+
 export async function scan(bin: string, inputs: context.Inputs): Promise<ScanResult> {
+  const tableFile = await scanTable(bin, inputs);
+  const jsonFile = await scanJson(bin, inputs);
+  const sarifFile = await scanSarif(bin, inputs);
+  const report: JSONReport = <JSONReport>JSON.parse(fs.readFileSync(jsonFile, {encoding: 'utf-8'}).trim());
+  let vulns: Array<Vulnerability> = [];
+  if (report.Results.length > 0) {
+    for (const result of report.Results) {
+      if (result.Vulnerabilities.length == 0) {
+        continue;
+      }
+      vulns.push(...result.Vulnerabilities);
+    }
+  }
   return {
-    table: await scanFormat(ScanFormat.Table, bin, inputs, false),
-    json: await scanFormat(ScanFormat.Json, bin, inputs, true),
-    sarif: await scanFormat(ScanFormat.Sarif, bin, inputs, true)
+    table: tableFile,
+    json: jsonFile,
+    sarif: sarifFile,
+    vulns: vulns
   };
+}
+
+async function scanTable(bin: string, inputs: context.Inputs): Promise<string> {
+  return scanFormat(ScanFormat.Table, bin, inputs, false);
+}
+
+async function scanJson(bin: string, inputs: context.Inputs): Promise<string> {
+  return await scanFormat(ScanFormat.Json, bin, inputs, true);
+}
+
+async function scanSarif(bin: string, inputs: context.Inputs): Promise<string> {
+  return await scanFormat(ScanFormat.Sarif, bin, inputs, true);
 }
 
 async function scanFormat(format: ScanFormat, bin: string, inputs: context.Inputs, silent: boolean): Promise<string> {

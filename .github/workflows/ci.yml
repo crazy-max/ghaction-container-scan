@@ -23,7 +23,6 @@ jobs:
         uses: actions/checkout@v2
       -
         name: Scan for vulnerabilities
-        id: scan
         uses: ./
         with:
           image: alpine:3.9
@@ -49,10 +48,42 @@ jobs:
           tags: name/app:latest
       -
         name: Scan for vulnerabilities
-        id: scan
         uses: ./
         with:
           tarball: /tmp/image.tar
+      -
+        name: Dump context
+        uses: crazy-max/ghaction-dump-context@v1
+
+  annotations:
+    runs-on: ubuntu-latest
+    steps:
+      -
+        name: Checkout
+        uses: actions/checkout@v2
+      -
+        name: Scan for vulnerabilities
+        uses: ./
+        with:
+          image: alpine:3.9
+          annotations: true
+      -
+        name: Dump context
+        uses: crazy-max/ghaction-dump-context@v1
+
+  threshold:
+    runs-on: ubuntu-latest
+    steps:
+      -
+        name: Checkout
+        uses: actions/checkout@v2
+      -
+        name: Scan for vulnerabilities
+        continue-on-error: true
+        uses: ./
+        with:
+          image: alpine:3.9
+          severity_threshold: MEDIUM
       -
         name: Dump context
         uses: crazy-max/ghaction-dump-context@v1

@@ -36,6 +36,19 @@ describe('setOutput', () => {
   });
 });
 
+describe('asyncForEach', () => {
+  it('executes async tasks sequentially', async () => {
+    const testValues = [1, 2, 3, 4, 5];
+    const results: number[] = [];
+
+    await context.asyncForEach(testValues, async value => {
+      results.push(value);
+    });
+
+    expect(results).toEqual(testValues);
+  });
+});
+
 // See: https://github.com/actions/toolkit/blob/master/packages/core/src/core.ts#L67
 function getInputName(name: string): string {
   return `INPUT_${name.replace(/ /g, '_').toUpperCase()}`;
