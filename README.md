@@ -4,9 +4,17 @@
 [![Test workflow](https://img.shields.io/github/workflow/status/crazy-max/docker-scan-action/test?label=test&logo=github&style=flat-square)](https://github.com/crazy-max/docker-scan-action/actions?workflow=test)
 [![Codecov](https://img.shields.io/codecov/c/github/crazy-max/docker-scan-action?logo=codecov&style=flat-square)](https://codecov.io/gh/crazy-max/docker-scan-action)
 
+## :test_tube: Experimental
+
+This repository is considered **EXPERIMENTAL** and under active development
+until further notice. It is subject to non-backward compatible changes or
+removal in any future version, so you should [pin to a specific tag/commit](https://docs.github.com/en/actions/creating-actions/about-actions#using-tags-for-release-management)
+of this action in your workflow.
+
 ## About
 
-GitHub Action to check for vulnerabilities in your Docker image.
+GitHub Action to check for vulnerabilities in your Docker image with
+[Trivy](https://github.com/aquasecurity/trivy).
 
 ___
 
@@ -61,9 +69,13 @@ jobs:
         name: Checkout
         uses: actions/checkout@v2
       -
+        name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+      -
         name: Build
         uses: docker/build-push-action@v2
         with:
+          context: .
           outputs: type=oci,dest=/tmp/image.tar
           tags: user/app:latest
       -
