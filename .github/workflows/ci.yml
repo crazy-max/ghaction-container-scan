@@ -83,7 +83,7 @@ jobs:
         uses: ./
         with:
           image: alpine:3.9
-          severity_threshold: MEDIUM
+          severity_threshold: HIGH
       -
         name: Dump context
         uses: crazy-max/ghaction-dump-context@v1

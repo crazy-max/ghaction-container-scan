@@ -211,19 +211,9 @@ function run() {
                 context.setOutput('json', scanResult.json);
                 context.setOutput('sarif', scanResult.sarif);
             }));
-            yield core.group(`Scan result (table)`, () => __awaiter(this, void 0, void 0, function* () {
+            yield core.group(`Scan result`, () => __awaiter(this, void 0, void 0, function* () {
                 if (scanResult.table) {
                     core.info(fs_1.default.readFileSync(scanResult.table, { encoding: 'utf-8' }).trim());
-                }
-            }));
-            yield core.group(`Scan result (json)`, () => __awaiter(this, void 0, void 0, function* () {
-                if (scanResult.json) {
-                    core.info(fs_1.default.readFileSync(scanResult.json, { encoding: 'utf-8' }).trim());
-                }
-            }));
-            yield core.group(`Scan result (sarif)`, () => __awaiter(this, void 0, void 0, function* () {
-                if (scanResult.sarif) {
-                    core.info(fs_1.default.readFileSync(scanResult.sarif, { encoding: 'utf-8' }).trim());
                 }
             }));
             let result = [];

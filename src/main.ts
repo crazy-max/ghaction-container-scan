@@ -44,21 +44,9 @@ async function run(): Promise<void> {
       context.setOutput('sarif', scanResult.sarif);
     });
 
-    await core.group(`Scan result (table)`, async () => {
+    await core.group(`Scan result`, async () => {
       if (scanResult.table) {
         core.info(fs.readFileSync(scanResult.table, {encoding: 'utf-8'}).trim());
-      }
-    });
-
-    await core.group(`Scan result (json)`, async () => {
-      if (scanResult.json) {
-        core.info(fs.readFileSync(scanResult.json, {encoding: 'utf-8'}).trim());
-      }
-    });
-
-    await core.group(`Scan result (sarif)`, async () => {
-      if (scanResult.sarif) {
-        core.info(fs.readFileSync(scanResult.sarif, {encoding: 'utf-8'}).trim());
       }
     });
 
