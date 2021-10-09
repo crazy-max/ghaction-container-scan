@@ -1,3 +1,6 @@
+process.env.FORCE_COLOR = '2';
+
+import chalk from 'chalk';
 import fs from 'fs';
 import * as context from './context';
 import * as trivy from './trivy';
@@ -59,43 +62,89 @@ async function run(): Promise<void> {
       }
     });
 
-    let unhealthy: Array<string> = [];
-    let vulns: Map<trivy.Severity, string> = new Map();
+    type Result = {
+      severity?: trivy.Severity;
+      annotationMsg?: string;
+      unhealthyMsg?: string;
+    };
+
+    let result: Array<Result> = [];
+    let isUnhealthy: boolean = false;
+
     if (scanResult.vulns) {
-      await context.asyncForEach(scanResult.vulns, async vuln => {
-        const vulnSeverity = trivy.SeverityName.get(vuln.Severity);
-        const vulnMsg = `${vuln.VulnerabilityID}) ${vuln.Severity} severity - ${vuln.Title} vulnerability in ${vuln.PkgName}`;
+      await context.asyncForEach(scanResult.vulns, async v => {
+        const vulnSeverity = trivy.SeverityName.get(v.Severity);
         if (vulnSeverity) {
-          vulns.set(vulnSeverity, vulnMsg);
+          const res: Result = {
+            severity: vulnSeverity,
+            annotationMsg: `${v.VulnerabilityID} - ${v.Severity} severity - ${v.Title} vulnerability in ${v.PkgName}`
+          };
           if (severityThreshold && vulnSeverity >= severityThreshold) {
-            unhealthy.push(vulnMsg);
+            let vulnidColorized, vulnsevColorized;
+            switch (vulnSeverity) {
+              case trivy.Severity.Unknown: {
+                vulnidColorized = chalk.gray(v.VulnerabilityID);
+                vulnsevColorized = chalk.gray(v.Severity);
+                break;
+              }
+              case trivy.Severity.Low: {
+                vulnidColorized = chalk.blue(v.VulnerabilityID);
+                vulnsevColorized = chalk.blue(v.Severity);
+                break;
+              }
+              case trivy.Severity.Medium: {
+                vulnidColorized = chalk.yellow(v.VulnerabilityID);
+                vulnsevColorized = chalk.yellow(v.Severity);
+                break;
+              }
+              case trivy.Severity.High: {
+                vulnidColorized = chalk.red(v.VulnerabilityID);
+                vulnsevColorized = chalk.red(v.Severity);
+                break;
+              }
+              case trivy.Severity.Critical: {
+                vulnidColorized = chalk.bold.redBright(v.VulnerabilityID);
+                vulnsevColorized = chalk.bold.redBright(v.Severity);
+                break;
+              }
+            }
+            const pkgTxt = `${chalk.magenta(v.PkgName)}${new Array(40 - chalk.magenta(v.PkgName).length).join(' ')}`;
+            const vulnidTxt = `${vulnidColorized}${new Array(30 - vulnidColorized.length).join(' ')}`;
+            const vulnsevTxt = `${vulnsevColorized}${new Array(20 - vulnsevColorized.length).join(' ')}`;
+            res.unhealthyMsg = `${pkgTxt} ${vulnidTxt} ${vulnsevTxt} ${v.Title}`;
+            isUnhealthy = true;
           }
+          result.push(res);
         }
       });
     }
 
-    if (vulns.size > 0 && inputs.annotations) {
+    if (result.length == 0) {
+      return;
+    }
+
+    if (inputs.annotations) {
       await core.group(`Generating GitHub annotations`, async () => {
-        await context.asyncForEach(vulns, async vuln => {
-          switch (vuln.key) {
+        await context.asyncForEach(result, async res => {
+          switch (res.severity) {
             case trivy.Severity.Unknown: {
-              core.notice(vuln.value);
+              core.notice(res.annotationMsg);
               break;
             }
             case trivy.Severity.Low: {
-              core.info(vuln.value);
+              core.notice(res.annotationMsg);
               break;
             }
             case trivy.Severity.Medium: {
-              core.warning(vuln.value);
+              core.warning(res.annotationMsg);
               break;
             }
             case trivy.Severity.High: {
-              core.error(vuln.value);
+              core.error(res.annotationMsg);
               break;
             }
             case trivy.Severity.Critical: {
-              core.error(vuln.value);
+              core.error(res.annotationMsg);
               break;
             }
           }
@@ -103,14 +152,13 @@ async function run(): Promise<void> {
       });
     }
 
-    if (unhealthy.length > 0) {
-      await core.group(`Checking severities`, async () => {
-        await context.asyncForEach(unhealthy, async msg => {
-          core.info(`  • ${msg}`);
-        });
-      });
-      core.setFailed(`Docker image is unhealthy. Following your criteria, the job has been marked as failed.`);
-      return;
+    await context.asyncForEach(result, async res => {
+      if (res.unhealthyMsg) {
+        core.info(res.unhealthyMsg);
+      }
+    });
+    if (isUnhealthy) {
+      core.setFailed(`Docker image is unhealthy. Following your desired severity threshold (${inputs.severityThreshold}), the job has been marked as failed.`);
     }
   } catch (error: any) {
     core.setFailed(error.message);

@@ -23,7 +23,7 @@ export enum ScanFormat {
 }
 
 export enum Severity {
-  Unknown,
+  Unknown = 1,
   Low,
   Medium,
   High,
