@@ -44,10 +44,16 @@ async function run(): Promise<void> {
         Inputs: inputs
       });
       if (scanResult.json) {
-        context.setOutput('json', scanResult.json);
+        const resJson = fs.readFileSync(scanResult.json, {encoding: 'utf-8'}).trim();
+        if (resJson.length > 0) {
+          context.setOutput('json', scanResult.json);
+        }
       }
       if (scanResult.sarif) {
-        context.setOutput('sarif', scanResult.sarif);
+        const resSarif = fs.readFileSync(scanResult.sarif, {encoding: 'utf-8'}).trim();
+        if (resSarif.length > 0) {
+          context.setOutput('sarif', scanResult.sarif);
+        }
       }
     });
 

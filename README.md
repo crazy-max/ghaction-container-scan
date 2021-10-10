@@ -200,6 +200,7 @@ jobs:
           dockerfile: ./Dockerfile
       -
         name: Upload SARIF file
+        if: ${{ steps.scan.outputs.sarif != '' }}
         uses: github/codeql-action/upload-sarif@v1
         with:
           sarif_file: ${{ steps.scan.outputs.sarif }}
