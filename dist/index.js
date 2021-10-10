@@ -213,10 +213,16 @@ function run() {
                     Inputs: inputs
                 });
                 if (scanResult.json) {
-                    context.setOutput('json', scanResult.json);
+                    const resJson = fs_1.default.readFileSync(scanResult.json, { encoding: 'utf-8' }).trim();
+                    if (resJson.length > 0) {
+                        context.setOutput('json', scanResult.json);
+                    }
                 }
                 if (scanResult.sarif) {
-                    context.setOutput('sarif', scanResult.sarif);
+                    const resSarif = fs_1.default.readFileSync(scanResult.sarif, { encoding: 'utf-8' }).trim();
+                    if (resSarif.length > 0) {
+                        context.setOutput('sarif', scanResult.sarif);
+                    }
                 }
             }));
             yield core.group(`Scan result`, () => __awaiter(this, void 0, void 0, function* () {
