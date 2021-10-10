@@ -53,6 +53,7 @@ jobs:
         name: Build
         uses: docker/build-push-action@v2
         with:
+          context: .
           push: true
           tags: user/app:latest
       -
@@ -115,6 +116,7 @@ jobs:
         name: Build
         uses: docker/build-push-action@v2
         with:
+          context: .
           push: true
           tags: user/app:latest
       -
@@ -149,6 +151,7 @@ jobs:
         name: Build
         uses: docker/build-push-action@v2
         with:
+          context: .
           push: true
           tags: user/app:latest
       -
@@ -185,6 +188,7 @@ jobs:
         name: Build
         uses: docker/build-push-action@v2
         with:
+          context: .
           push: true
           tags: user/app:latest
       -
@@ -193,12 +197,17 @@ jobs:
         uses: crazy-max/docker-scan-action@master
         with:
           image: user/app:latest
+          dockerfile: ./Dockerfile
       -
         name: Upload SARIF file
         uses: github/codeql-action/upload-sarif@v1
         with:
           sarif_file: ${{ steps.scan.outputs.sarif }}
 ```
+
+> :bulb: `dockerfile` input is required to generate a sarif report.
+
+![GitHub Code Scanning](.github/codeql.png)
 
 ### Build, scan and push your image
 
@@ -254,6 +263,7 @@ Following inputs can be used as `step.with` keys
 | `trivy_version`        | String   | [Trivy CLI](https://github.com/aquasecurity/trivy) version (default `latest`) |
 | `image`                | String   | Docker image to scan (e.g. `alpine:3.7`) |
 | `tarball`              | String   | Docker image tarball path to scan |
+| `dockerfile`           | String   | Dockerfile required to generate a sarif report |
 | `severity`             | String   | Report vulnerabilities of provided level or higher (default: `UNKNOWN,LOW,MEDIUM,HIGH,CRITICAL`) |
 | `severity_threshold`   | String   | Defines threshold for severity |
 | `annotations`          | Bool     | Create GitHub annotations in your workflow for vulnerabilities discovered |

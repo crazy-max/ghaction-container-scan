@@ -1,7 +1,6 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import * as semver from 'semver';
-import * as context from '../src/context';
 import * as trivy from '../src/trivy';
 
 describe('getVersion', () => {
@@ -51,11 +50,16 @@ describe('install', () => {
 
 describe('scan', () => {
   it('scans alpine:3.9 image', async () => {
-    process.env[`INPUT_IMAGE`] = 'alpine:3.9';
-    process.env[`INPUT_ANNOTATIONS`] = 'false';
     const trivyBin = await trivy.install('latest');
     expect(fs.existsSync(trivyBin)).toBe(true);
-    const scanResult = await trivy.scan(trivyBin, await context.getInputs());
+    const scanResult = await trivy.scan({
+      Bin: trivyBin,
+      Inputs: {
+        trivyVersion: 'latest',
+        image: 'alpine:3.9',
+        dockerfile: path.join(__dirname, 'fixtures', 'Dockerfile')
+      }
+    });
     expect(scanResult.table).not.toBeUndefined();
     expect(scanResult.json).not.toBeUndefined();
     expect(scanResult.sarif).not.toBeUndefined();

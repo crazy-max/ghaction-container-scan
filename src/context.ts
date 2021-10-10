@@ -21,13 +21,14 @@ export function tmpNameSync(options?: tmp.TmpNameOptions): string {
 }
 
 export interface Inputs {
-  trivyVersion: string;
-  image: string;
-  tarball: string;
-  severity: string;
-  severityThreshold: string;
-  annotations: boolean;
-  githubToken: string;
+  trivyVersion?: string;
+  image?: string;
+  tarball?: string;
+  dockerfile?: string;
+  severity?: string;
+  severityThreshold?: string;
+  annotations?: boolean;
+  githubToken?: string;
 }
 
 export async function getInputs(): Promise<Inputs> {
@@ -35,6 +36,7 @@ export async function getInputs(): Promise<Inputs> {
     trivyVersion: core.getInput('trivy_version') || 'latest',
     image: core.getInput('image'),
     tarball: core.getInput('tarball'),
+    dockerfile: core.getInput('dockerfile'),
     severity: core.getInput('severity'),
     severityThreshold: core.getInput('severity_threshold'),
     annotations: core.getBooleanInput('annotations'),

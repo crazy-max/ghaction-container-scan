@@ -23,9 +23,13 @@ jobs:
         uses: actions/checkout@v2
       -
         name: Scan for vulnerabilities
+        id: scan
         uses: ./
         with:
           image: alpine:3.9
+      -
+        name: JSON result
+        run: cat ${{ steps.scan.outputs.json }}
       -
         name: Dump context
         uses: crazy-max/ghaction-dump-context@v1
@@ -48,9 +52,43 @@ jobs:
           tags: name/app:latest
       -
         name: Scan for vulnerabilities
+        id: scan
         uses: ./
         with:
           tarball: /tmp/image.tar
+      -
+        name: JSON result
+        run: cat ${{ steps.scan.outputs.json }}
+      -
+        name: Dump context
+        uses: crazy-max/ghaction-dump-context@v1
+
+  sarif:
+    runs-on: ubuntu-latest
+    steps:
+      -
+        name: Checkout
+        uses: actions/checkout@v2
+      -
+        name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+      -
+        name: Build
+        uses: docker/build-push-action@v2
+        with:
+          context: ./test
+          outputs: type=oci,dest=/tmp/image.tar
+          tags: name/app:latest
+      -
+        name: Scan for vulnerabilities
+        id: scan
+        uses: ./
+        with:
+          tarball: /tmp/image.tar
+          dockerfile: ./test/Dockerfile
+      -
+        name: SARIF result
+        run: cat ${{ steps.scan.outputs.sarif }}
       -
         name: Dump context
         uses: crazy-max/ghaction-dump-context@v1
@@ -87,24 +125,3 @@ jobs:
       -
         name: Dump context
         uses: crazy-max/ghaction-dump-context@v1
-
-#  codeql:
-#    runs-on: ubuntu-latest
-#    steps:
-#      -
-#        name: Checkout
-#        uses: actions/checkout@v2
-#      -
-#        name: Scan for vulnerabilities
-#        id: scan
-#        uses: ./
-#        with:
-#          image: alpine:3.9
-#      -
-#        name: Upload SARIF file
-#        uses: github/codeql-action/upload-sarif@v1
-#        with:
-#          sarif_file: ${{ steps.scan.outputs.sarif }}
-#      -
-#        name: Dump context
-#        uses: crazy-max/ghaction-dump-context@v1

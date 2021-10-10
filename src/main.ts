@@ -30,7 +30,7 @@ async function run(): Promise<void> {
       trivyBin = await trivy.install(inputs.trivyVersion || 'latest');
     });
 
-    let scanInput: string;
+    let scanInput: string | undefined;
     if (inputs.image) {
       scanInput = inputs.image;
     } else {
@@ -39,9 +39,16 @@ async function run(): Promise<void> {
 
     let scanResult: trivy.ScanResult = {};
     await core.group(`Scanning ${scanInput} Docker image`, async () => {
-      scanResult = await trivy.scan(trivyBin, inputs);
-      context.setOutput('json', scanResult.json);
-      context.setOutput('sarif', scanResult.sarif);
+      scanResult = await trivy.scan({
+        Bin: trivyBin,
+        Inputs: inputs
+      });
+      if (scanResult.json) {
+        context.setOutput('json', scanResult.json);
+      }
+      if (scanResult.sarif) {
+        context.setOutput('sarif', scanResult.sarif);
+      }
     });
 
     await core.group(`Scan result`, async () => {

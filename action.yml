@@ -17,6 +17,9 @@ inputs:
   tarball:
     description: 'Docker image tarball path to scan'
     required: false
+  dockerfile:
+    description: 'Dockerfile required to generate a sarif report'
+    required: false
   severity:
     description: 'Report vulnerabilities of provided level or higher (default: UNKNOWN,LOW,MEDIUM,HIGH,CRITICAL)'
     required: false

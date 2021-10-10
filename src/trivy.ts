@@ -5,9 +5,15 @@ import * as util from 'util';
 import * as context from './context';
 import * as github from './github';
 import {JSONReport, Vulnerability} from './trivy-report';
+import {getTemplate} from './trivy-sarif';
 import * as core from '@actions/core';
 import * as exec from '@actions/exec';
 import * as tc from '@actions/tool-cache';
+
+export type ScanOptions = {
+  Bin: string;
+  Inputs: context.Inputs;
+};
 
 export type ScanResult = {
   table?: string;
@@ -38,16 +44,11 @@ export const SeverityName = new Map<string, Severity>([
   ['CRITICAL', Severity.Critical]
 ]);
 
-export const getSeverityName = async (status: Severity): Promise<string | undefined> => {
-  for await (let [key, val] of SeverityName) {
-    if (val == status) return key;
-  }
-};
+export async function scan(opts: ScanOptions): Promise<ScanResult> {
+  const jsonFile = await scanJson(opts);
+  const sarifFile = await scanSarif(opts);
+  const tableFile = await scanTable(opts);
 
-export async function scan(bin: string, inputs: context.Inputs): Promise<ScanResult> {
-  const tableFile = await scanTable(bin, inputs);
-  const jsonFile = await scanJson(bin, inputs);
-  const sarifFile = await scanSarif(bin, inputs);
   const report: JSONReport = <JSONReport>JSON.parse(fs.readFileSync(jsonFile, {encoding: 'utf-8'}).trim());
   let vulns: Array<Vulnerability> = [];
   if (report.Results.length > 0) {
@@ -58,6 +59,7 @@ export async function scan(bin: string, inputs: context.Inputs): Promise<ScanRes
       vulns.push(...result.Vulnerabilities);
     }
   }
+
   return {
     table: tableFile,
     json: jsonFile,
@@ -66,24 +68,31 @@ export async function scan(bin: string, inputs: context.Inputs): Promise<ScanRes
   };
 }
 
-async function scanTable(bin: string, inputs: context.Inputs): Promise<string> {
-  return scanFormat(ScanFormat.Table, bin, inputs, false);
+async function scanTable(opts: ScanOptions): Promise<string> {
+  return scanFormat(ScanFormat.Table, opts);
 }
 
-async function scanJson(bin: string, inputs: context.Inputs): Promise<string> {
-  return await scanFormat(ScanFormat.Json, bin, inputs, true);
+async function scanJson(opts: ScanOptions): Promise<string> {
+  return await scanFormat(ScanFormat.Json, opts);
 }
 
-async function scanSarif(bin: string, inputs: context.Inputs): Promise<string> {
-  return await scanFormat(ScanFormat.Sarif, bin, inputs, true);
+async function scanSarif(opts: ScanOptions): Promise<string> {
+  return await scanFormat(ScanFormat.Sarif, opts);
 }
 
-async function scanFormat(format: ScanFormat, bin: string, inputs: context.Inputs, silent: boolean): Promise<string> {
+async function scanFormat(format: ScanFormat, opts: ScanOptions): Promise<string> {
+  core.info(`\nStarting scan (${format} format)\n=============================`);
+
+  if (format == ScanFormat.Sarif && !opts.Inputs.dockerfile) {
+    core.warning('Dockerfile not provided. Skipping sarif scan result.');
+    return '';
+  }
+
   const resFile = path.join(context.tmpDir(), `result.${format}`).split(path.sep).join(path.posix.sep);
 
   let scanArgs: Array<string> = ['image', '--no-progress', '--output', resFile];
-  if (inputs.severity) {
-    scanArgs.push('--severity', inputs.severity);
+  if (opts.Inputs.severity) {
+    scanArgs.push('--severity', opts.Inputs.severity);
   }
   switch (format) {
     case ScanFormat.Table:
@@ -94,21 +103,21 @@ async function scanFormat(format: ScanFormat, bin: string, inputs: context.Input
       break;
     case ScanFormat.Sarif:
       scanArgs.push('--format', 'template');
-      scanArgs.push('--template', `@${path.join(path.dirname(bin), 'contrib', 'sarif.tpl')}`);
+      scanArgs.push('--template', `@${getTemplate(opts.Inputs.dockerfile)}`);
       break;
   }
-  if (inputs.image) {
-    scanArgs.push(inputs.image);
-  } else if (inputs.tarball) {
-    scanArgs.push('--input', inputs.tarball);
+  if (opts.Inputs.image) {
+    scanArgs.push(opts.Inputs.image);
+  } else if (opts.Inputs.tarball) {
+    scanArgs.push('--input', opts.Inputs.tarball);
   }
 
   return await exec
-    .getExecOutput(bin, scanArgs, {
+    .getExecOutput(opts.Bin, scanArgs, {
       ignoreReturnCode: true,
-      silent: silent,
+      silent: false,
       env: {
-        GITHUB_TOKEN: inputs.githubToken
+        GITHUB_TOKEN: opts.Inputs.githubToken || ''
       }
     })
     .then(res => {

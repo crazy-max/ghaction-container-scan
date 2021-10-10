@@ -65,6 +65,7 @@ function getInputs() {
             trivyVersion: core.getInput('trivy_version') || 'latest',
             image: core.getInput('image'),
             tarball: core.getInput('tarball'),
+            dockerfile: core.getInput('dockerfile'),
             severity: core.getInput('severity'),
             severityThreshold: core.getInput('severity_threshold'),
             annotations: core.getBooleanInput('annotations'),
@@ -207,9 +208,16 @@ function run() {
             }
             let scanResult = {};
             yield core.group(`Scanning ${scanInput} Docker image`, () => __awaiter(this, void 0, void 0, function* () {
-                scanResult = yield trivy.scan(trivyBin, inputs);
-                context.setOutput('json', scanResult.json);
-                context.setOutput('sarif', scanResult.sarif);
+                scanResult = yield trivy.scan({
+                    Bin: trivyBin,
+                    Inputs: inputs
+                });
+                if (scanResult.json) {
+                    context.setOutput('json', scanResult.json);
+                }
+                if (scanResult.sarif) {
+                    context.setOutput('sarif', scanResult.sarif);
+                }
             }));
             yield core.group(`Scan result`, () => __awaiter(this, void 0, void 0, function* () {
                 if (scanResult.table) {
@@ -360,6 +368,139 @@ if (!exports.IsPost) {
 
 /***/ }),
 
+/***/ 7336:
+/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
+
+"use strict";
+
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.getTemplate = void 0;
+const fs_1 = __importDefault(__nccwpck_require__(5747));
+const path_1 = __importDefault(__nccwpck_require__(5622));
+const context = __importStar(__nccwpck_require__(3842));
+function getTemplate(dockerfilePath) {
+    const tplFile = path_1.default.join(context.tmpDir(), `sarif.tpl`).split(path_1.default.sep).join(path_1.default.posix.sep);
+    fs_1.default.writeFileSync(tplFile, `{
+  "$schema": "https://raw.githubusercontent.com/oasis-tcs/sarif-spec/master/Schemata/sarif-schema-2.1.0.json",
+  "version": "2.1.0",
+  "runs": [
+    {
+      "tool": {
+        "driver": {
+          "name": "Trivy",
+          "rules": [
+        {{- $t_first := true }}
+        {{- range $result := . }}
+            {{- $vulnerabilityType := .Type }}
+            {{- range .Vulnerabilities -}}
+              {{- if $t_first -}}
+                {{- $t_first = false -}}
+              {{ else -}}
+                ,
+              {{- end }}
+            {
+              "id": {{ printf "%s: %s-%s %s" $result.Target .PkgName .InstalledVersion .VulnerabilityID | toJson }},
+              "name": "{{ toSarifRuleName $vulnerabilityType }}",
+              "shortDescription": {
+                "text": {{ printf "%v Package: %v" .VulnerabilityID .PkgName | printf "%q" }}
+              },
+              "fullDescription": {
+                "text": {{ endWithPeriod (escapeString .Title) | printf "%q" }}
+              },
+              "defaultConfiguration": {
+                "level": "{{ toSarifErrorLevel .Vulnerability.Severity }}"
+              }
+              {{- with $help_uri := .PrimaryURL -}}
+              ,
+              {{ $help_uri | printf "\\"helpUri\\": %q," -}}
+              {{- else -}}
+              ,
+              {{- end }}
+              "help": {
+                "text": {{ printf "Vulnerability %v\\nSeverity: %v\\nPackage: %v\\nInstalled Version: %v\\nFixed Version: %v\\nLink: [%v](%v)" .VulnerabilityID .Vulnerability.Severity .PkgName .InstalledVersion .FixedVersion .VulnerabilityID .PrimaryURL | printf "%q"}},
+                "markdown": {{ printf "**Vulnerability %v**\\n| Severity | Package | Installed Version | Fixed Version | Link |\\n| --- | --- | --- | --- | --- |\\n|%v|%v|%v|%v|[%v](%v)|\\n" .VulnerabilityID .Vulnerability.Severity .PkgName .InstalledVersion .FixedVersion .VulnerabilityID .PrimaryURL | printf "%q"}}
+              },
+              "properties": {
+                "tags": [
+                  "vulnerability",
+                  "{{ .Vulnerability.Severity }}",
+                  {{ .PkgName | printf "%q" }}
+                ],
+                "precision": "very-high"
+              }
+            }
+            {{- end -}}
+         {{- end -}}
+          ]
+        }
+      },
+      "results": [
+    {{- $t_first := true }}
+    {{- range $result := . }}
+        {{- $filePath := .Target }}
+        {{- range $index, $vulnerability := .Vulnerabilities -}}
+          {{- if $t_first -}}
+            {{- $t_first = false -}}
+          {{ else -}}
+            ,
+          {{- end }}
+        {
+          "ruleId": {{ printf "%s: %s-%s %s" $result.Target .PkgName .InstalledVersion .VulnerabilityID | toJson }},
+          "ruleIndex": {{ $index }},
+          "level": "{{ toSarifErrorLevel $vulnerability.Vulnerability.Severity }}",
+          "message": {
+            "text": {{ endWithPeriod (escapeString $vulnerability.Description) | printf "%q" }}
+          },
+          "locations": [{
+            "physicalLocation": {
+              "artifactLocation": {
+                "uri": "${dockerfilePath}"
+              },
+              "region": {
+                "startLine": 1,
+                "startColumn": 1,
+                "endLine": 1,
+                "endColumn": 1
+              }
+            }
+          }]
+        }
+        {{- end -}}
+      {{- end -}}
+      ],
+      "columnKind": "utf16CodeUnits"
+    }
+  ]
+}`);
+    return tplFile;
+}
+exports.getTemplate = getTemplate;
+//# sourceMappingURL=trivy-sarif.js.map
+
+/***/ }),
+
 /***/ 9696:
 /***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
 
@@ -393,24 +534,18 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var __asyncValues = (this && this.__asyncValues) || function (o) {
-    if (!Symbol.asyncIterator) throw new TypeError("Symbol.asyncIterator is not defined.");
-    var m = o[Symbol.asyncIterator], i;
-    return m ? m.call(o) : (o = typeof __values === "function" ? __values(o) : o[Symbol.iterator](), i = {}, verb("next"), verb("throw"), verb("return"), i[Symbol.asyncIterator] = function () { return this; }, i);
-    function verb(n) { i[n] = o[n] && function (v) { return new Promise(function (resolve, reject) { v = o[n](v), settle(resolve, reject, v.done, v.value); }); }; }
-    function settle(resolve, reject, d, v) { Promise.resolve(v).then(function(v) { resolve({ value: v, done: d }); }, reject); }
-};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.install = exports.satisfies = exports.parseVersion = exports.getVersion = exports.scan = exports.getSeverityName = exports.SeverityName = exports.Severity = exports.ScanFormat = void 0;
+exports.install = exports.satisfies = exports.parseVersion = exports.getVersion = exports.scan = exports.SeverityName = exports.Severity = exports.ScanFormat = void 0;
 const fs_1 = __importDefault(__nccwpck_require__(5747));
 const path = __importStar(__nccwpck_require__(5622));
 const semver = __importStar(__nccwpck_require__(1383));
 const util = __importStar(__nccwpck_require__(1669));
 const context = __importStar(__nccwpck_require__(3842));
 const github = __importStar(__nccwpck_require__(5928));
+const trivy_sarif_1 = __nccwpck_require__(7336);
 const core = __importStar(__nccwpck_require__(2186));
 const exec = __importStar(__nccwpck_require__(1514));
 const tc = __importStar(__nccwpck_require__(7784));
@@ -435,29 +570,11 @@ exports.SeverityName = new Map([
     ['HIGH', Severity.High],
     ['CRITICAL', Severity.Critical]
 ]);
-const getSeverityName = (status) => __awaiter(void 0, void 0, void 0, function* () {
-    var e_1, _a;
-    try {
-        for (var SeverityName_1 = __asyncValues(exports.SeverityName), SeverityName_1_1; SeverityName_1_1 = yield SeverityName_1.next(), !SeverityName_1_1.done;) {
-            let [key, val] = SeverityName_1_1.value;
-            if (val == status)
-                return key;
-        }
-    }
-    catch (e_1_1) { e_1 = { error: e_1_1 }; }
-    finally {
-        try {
-            if (SeverityName_1_1 && !SeverityName_1_1.done && (_a = SeverityName_1.return)) yield _a.call(SeverityName_1);
-        }
-        finally { if (e_1) throw e_1.error; }
-    }
-});
-exports.getSeverityName = getSeverityName;
-function scan(bin, inputs) {
+function scan(opts) {
     return __awaiter(this, void 0, void 0, function* () {
-        const tableFile = yield scanTable(bin, inputs);
-        const jsonFile = yield scanJson(bin, inputs);
-        const sarifFile = yield scanSarif(bin, inputs);
+        const jsonFile = yield scanJson(opts);
+        const sarifFile = yield scanSarif(opts);
+        const tableFile = yield scanTable(opts);
         const report = JSON.parse(fs_1.default.readFileSync(jsonFile, { encoding: 'utf-8' }).trim());
         let vulns = [];
         if (report.Results.length > 0) {
@@ -477,27 +594,32 @@ function scan(bin, inputs) {
     });
 }
 exports.scan = scan;
-function scanTable(bin, inputs) {
+function scanTable(opts) {
     return __awaiter(this, void 0, void 0, function* () {
-        return scanFormat(ScanFormat.Table, bin, inputs, false);
+        return scanFormat(ScanFormat.Table, opts);
     });
 }
-function scanJson(bin, inputs) {
+function scanJson(opts) {
     return __awaiter(this, void 0, void 0, function* () {
-        return yield scanFormat(ScanFormat.Json, bin, inputs, true);
+        return yield scanFormat(ScanFormat.Json, opts);
     });
 }
-function scanSarif(bin, inputs) {
+function scanSarif(opts) {
     return __awaiter(this, void 0, void 0, function* () {
-        return yield scanFormat(ScanFormat.Sarif, bin, inputs, true);
+        return yield scanFormat(ScanFormat.Sarif, opts);
     });
 }
-function scanFormat(format, bin, inputs, silent) {
+function scanFormat(format, opts) {
     return __awaiter(this, void 0, void 0, function* () {
+        core.info(`\nStarting scan (${format} format)\n=============================`);
+        if (format == ScanFormat.Sarif && !opts.Inputs.dockerfile) {
+            core.warning('Dockerfile not provided. Skipping sarif scan result.');
+            return '';
+        }
         const resFile = path.join(context.tmpDir(), `result.${format}`).split(path.sep).join(path.posix.sep);
         let scanArgs = ['image', '--no-progress', '--output', resFile];
-        if (inputs.severity) {
-            scanArgs.push('--severity', inputs.severity);
+        if (opts.Inputs.severity) {
+            scanArgs.push('--severity', opts.Inputs.severity);
         }
         switch (format) {
             case ScanFormat.Table:
@@ -508,21 +630,21 @@ function scanFormat(format, bin, inputs, silent) {
                 break;
             case ScanFormat.Sarif:
                 scanArgs.push('--format', 'template');
-                scanArgs.push('--template', `@${path.join(path.dirname(bin), 'contrib', 'sarif.tpl')}`);
+                scanArgs.push('--template', `@${(0, trivy_sarif_1.getTemplate)(opts.Inputs.dockerfile)}`);
                 break;
         }
-        if (inputs.image) {
-            scanArgs.push(inputs.image);
+        if (opts.Inputs.image) {
+            scanArgs.push(opts.Inputs.image);
         }
-        else if (inputs.tarball) {
-            scanArgs.push('--input', inputs.tarball);
+        else if (opts.Inputs.tarball) {
+            scanArgs.push('--input', opts.Inputs.tarball);
         }
         return yield exec
-            .getExecOutput(bin, scanArgs, {
+            .getExecOutput(opts.Bin, scanArgs, {
             ignoreReturnCode: true,
-            silent: silent,
+            silent: false,
             env: {
-                GITHUB_TOKEN: inputs.githubToken
+                GITHUB_TOKEN: opts.Inputs.githubToken || ''
             }
         })
             .then(res => {
