@@ -30,9 +30,6 @@ jobs:
       -
         name: JSON result
         run: cat ${{ steps.scan.outputs.json }}
-      -
-        name: Dump context
-        uses: crazy-max/ghaction-dump-context@v1
 
   tarball:
     runs-on: ubuntu-latest
@@ -59,9 +56,6 @@ jobs:
       -
         name: JSON result
         run: cat ${{ steps.scan.outputs.json }}
-      -
-        name: Dump context
-        uses: crazy-max/ghaction-dump-context@v1
 
   sarif:
     runs-on: ubuntu-latest
@@ -89,9 +83,6 @@ jobs:
       -
         name: SARIF result
         run: cat ${{ steps.scan.outputs.sarif }}
-      -
-        name: Dump context
-        uses: crazy-max/ghaction-dump-context@v1
 
   annotations:
     runs-on: ubuntu-latest
@@ -105,9 +96,6 @@ jobs:
         with:
           image: alpine:3.9
           annotations: true
-      -
-        name: Dump context
-        uses: crazy-max/ghaction-dump-context@v1
 
   threshold:
     runs-on: ubuntu-latest
@@ -122,6 +110,54 @@ jobs:
         with:
           image: alpine:3.9
           severity_threshold: HIGH
+
+  build-scan-push:
+    runs-on: ubuntu-latest
+    services:
+      registry:
+        image: registry:2
+        ports:
+          - 5000:5000
+    env:
+      REPO_SLUG: localhost:5000/name/app
+    steps:
       -
-        name: Dump context
-        uses: crazy-max/ghaction-dump-context@v1
+        name: Checkout
+        uses: actions/checkout@v2
+      -
+        name: Docker meta
+        id: meta
+        uses: docker/metadata-action@v3
+        with:
+          images: ${{ env.REPO_SLUG }}
+      -
+        name: Set up QEMU
+        uses: docker/setup-qemu-action@v1
+      -
+        name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+        with:
+          driver-opts: network=host
+      -
+        name: Build and load
+        uses: docker/build-push-action@v2
+        with:
+          context: ./test
+          file: ./test/Dockerfile
+          load: true
+          tags: ${{ steps.meta.outputs.tags }}
+      -
+        name: Scan for vulnerabilities
+        uses: ./
+        with:
+          image: ${{ env.REPO_SLUG }}:${{ steps.meta.outputs.version }}
+          dockerfile: ./test/Dockerfile
+      -
+        name: Build multi-platform and push
+        uses: docker/build-push-action@v2
+        with:
+          context: ./test
+          file: ./test/Dockerfile
+          platforms: linux/amd64,linux/arm64
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}

@@ -231,7 +231,7 @@ jobs:
         name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1
       -
-        name: Build for scan
+        name: Build and load
         uses: docker/build-push-action@v2
         with:
           context: .
