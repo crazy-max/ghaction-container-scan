@@ -2,9 +2,9 @@ import fs from 'fs';
 import * as path from 'path';
 import * as semver from 'semver';
 import * as util from 'util';
+import truncate from 'lodash.truncate';
 import * as context from './context';
 import * as github from './github';
-import {JSONReport, Vulnerability} from './trivy-report';
 import {getTemplate} from './trivy-sarif';
 import * as core from '@actions/core';
 import * as exec from '@actions/exec';
@@ -28,6 +28,20 @@ export enum ScanFormat {
   Sarif = 'sarif'
 }
 
+export interface Vulnerability {
+  VulnerabilityID: string;
+  PkgName: string;
+  InstalledVersion: string;
+  FixedVersion?: string;
+  SeveritySource?: string;
+  PrimaryURL?: string;
+  Title?: string;
+  Description?: string;
+  Severity: string;
+  PublishedDate?: Date;
+  LastModifiedDate?: Date;
+}
+
 export enum Severity {
   Unknown = 1,
   Low,
@@ -48,15 +62,20 @@ export async function scan(opts: ScanOptions): Promise<ScanResult> {
   const jsonFile = await scanJson(opts);
   const sarifFile = await scanSarif(opts);
   const tableFile = await scanTable(opts);
-
-  const report: JSONReport = <JSONReport>JSON.parse(fs.readFileSync(jsonFile, {encoding: 'utf-8'}).trim());
   let vulns: Array<Vulnerability> = [];
-  if (report.Results.length > 0) {
-    for (const result of report.Results) {
-      if (result.Vulnerabilities.length == 0) {
+
+  const parsed = JSON.parse(fs.readFileSync(jsonFile, {encoding: 'utf-8'}).trim());
+  if (parsed.Results) {
+    for (const result of parsed.Results) {
+      if (!result.Vulnerabilities) {
         continue;
       }
-      vulns.push(...result.Vulnerabilities);
+      for (const vuln of result.Vulnerabilities) {
+        if (!vuln.Title && vuln.Description) {
+          vuln.Title = truncate(vuln.Description, {length: 48});
+        }
+        vulns.push(vuln);
+      }
     }
   }
 

@@ -53,7 +53,12 @@ async function run(): Promise<void> {
 
     await core.group(`Scan result`, async () => {
       if (scanResult.table) {
-        core.info(fs.readFileSync(scanResult.table, {encoding: 'utf-8'}).trim());
+        const resTable = fs.readFileSync(scanResult.table, {encoding: 'utf-8'}).trim();
+        if (resTable.length > 0) {
+          core.info(resTable);
+        } else {
+          core.info(`No vulnerability found`);
+        }
       }
     });
 
