@@ -17,6 +17,13 @@ on:
 jobs:
   image:
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        image:
+          - alpine:3.9
+          - alpine:latest
+          - moby/buildkit:master
     steps:
       -
         name: Checkout
@@ -26,7 +33,7 @@ jobs:
         id: scan
         uses: ./
         with:
-          image: alpine:3.9
+          image: ${{ matrix.image }}
       -
         name: JSON result
         run: cat ${{ steps.scan.outputs.json }}
@@ -86,6 +93,13 @@ jobs:
 
   annotations:
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        image:
+          - alpine:3.9
+          - alpine:latest
+          - moby/buildkit:master
     steps:
       -
         name: Checkout
@@ -94,11 +108,18 @@ jobs:
         name: Scan for vulnerabilities
         uses: ./
         with:
-          image: alpine:3.9
+          image: ${{ matrix.image }}
           annotations: true
 
   threshold:
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        image:
+          - alpine:3.9
+          - alpine:latest
+          - moby/buildkit:master
     steps:
       -
         name: Checkout

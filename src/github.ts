@@ -1,5 +1,3 @@
-import {JSONReport} from './trivy-report';
-import * as core from '@actions/core';
 import * as httpm from '@actions/http-client';
 
 export interface GitHubRelease {
