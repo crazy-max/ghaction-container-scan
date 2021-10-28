@@ -1,15 +1,9 @@
 [![GitHub release](https://img.shields.io/github/release/crazy-max/ghaction-container-scan.svg?style=flat-square)](https://github.com/crazy-max/ghaction-container-scan/releases/latest)
 [![GitHub marketplace](https://img.shields.io/badge/marketplace-container--scan-blue?logo=github&style=flat-square)](https://github.com/marketplace/actions/container-scan)
-[![CI workflow](https://img.shields.io/github/workflow/status/crazy-max/ghaction-container-scan/ci?label=ci&logo=github&style=flat-square)](https://github.com/crazy-max/ghaction-container-scan/actions?workflow=ci)
 [![Test workflow](https://img.shields.io/github/workflow/status/crazy-max/ghaction-container-scan/test?label=test&logo=github&style=flat-square)](https://github.com/crazy-max/ghaction-container-scan/actions?workflow=test)
 [![Codecov](https://img.shields.io/codecov/c/github/crazy-max/ghaction-container-scan?logo=codecov&style=flat-square)](https://codecov.io/gh/crazy-max/ghaction-container-scan)
-
-## :test_tube: Experimental
-
-This repository is considered **EXPERIMENTAL** and under active development
-until further notice. It is subject to non-backward compatible changes or
-removal in any future version, so you should [pin to a specific tag/commit](https://docs.github.com/en/actions/creating-actions/about-actions#using-tags-for-release-management)
-of this action in your workflow.
+[![Become a sponsor](https://img.shields.io/badge/sponsor-crazy--max-181717.svg?logo=github&style=flat-square)](https://github.com/sponsors/crazy-max)
+[![Paypal Donate](https://img.shields.io/badge/donate-paypal-00457c.svg?logo=paypal&style=flat-square)](https://www.paypal.me/crazyws)
 
 ## About
 
@@ -30,7 +24,8 @@ ___
 * [Customizing](#customizing)
   * [inputs](#inputs)
   * [outputs](#outputs)
-* [Keep up-to-date with GitHub Dependabot](#keep-up-to-date-with-github-dependabot)
+* [Contributing](#contributing)
+* [License](#license)
 
 ## Usage
 
@@ -280,18 +275,16 @@ Following outputs are available
 | `json`            | File    | JSON format scan result |
 | `sarif`           | File    | SARIF format scan result |
 
-## Keep up-to-date with GitHub Dependabot
+## Contributing
 
-Since [Dependabot](https://docs.github.com/en/github/administering-a-repository/keeping-your-actions-up-to-date-with-github-dependabot)
-has [native GitHub Actions support](https://docs.github.com/en/github/administering-a-repository/configuration-options-for-dependency-updates#package-ecosystem),
-to enable it on your GitHub repo all you need to do is add the `.github/dependabot.yml` file:
+Want to contribute? Awesome! The most basic way to show your support is to star the project, or to raise issues. If
+you want to open a pull request, please read the [contributing guidelines](.github/CONTRIBUTING.md).
 
-```yaml
-version: 2
-updates:
-  # Maintain dependencies for GitHub Actions
-  - package-ecosystem: "github-actions"
-    directory: "/"
-    schedule:
-      interval: "daily"
-```
+You can also support this project by [**becoming a sponsor on GitHub**](https://github.com/sponsors/crazy-max) or by
+making a [Paypal donation](https://www.paypal.me/crazyws) to ensure this journey continues indefinitely!
+
+Thanks again for your support, it is much appreciated! :pray:
+
+## License
+
+MIT. See `LICENSE` for more details.
