@@ -1,8 +1,8 @@
-[![GitHub release](https://img.shields.io/github/release/crazy-max/docker-scan-action.svg?style=flat-square)](https://github.com/crazy-max/docker-scan-action/releases/latest)
-[![GitHub marketplace](https://img.shields.io/badge/marketplace-docker--scan-blue?logo=github&style=flat-square)](https://github.com/marketplace/actions/docker-scan)
-[![CI workflow](https://img.shields.io/github/workflow/status/crazy-max/docker-scan-action/ci?label=ci&logo=github&style=flat-square)](https://github.com/crazy-max/docker-scan-action/actions?workflow=ci)
-[![Test workflow](https://img.shields.io/github/workflow/status/crazy-max/docker-scan-action/test?label=test&logo=github&style=flat-square)](https://github.com/crazy-max/docker-scan-action/actions?workflow=test)
-[![Codecov](https://img.shields.io/codecov/c/github/crazy-max/docker-scan-action?logo=codecov&style=flat-square)](https://codecov.io/gh/crazy-max/docker-scan-action)
+[![GitHub release](https://img.shields.io/github/release/crazy-max/ghaction-container-scan.svg?style=flat-square)](https://github.com/crazy-max/ghaction-container-scan/releases/latest)
+[![GitHub marketplace](https://img.shields.io/badge/marketplace-container--scan-blue?logo=github&style=flat-square)](https://github.com/marketplace/actions/container-scan)
+[![CI workflow](https://img.shields.io/github/workflow/status/crazy-max/ghaction-container-scan/ci?label=ci&logo=github&style=flat-square)](https://github.com/crazy-max/ghaction-container-scan/actions?workflow=ci)
+[![Test workflow](https://img.shields.io/github/workflow/status/crazy-max/ghaction-container-scan/test?label=test&logo=github&style=flat-square)](https://github.com/crazy-max/ghaction-container-scan/actions?workflow=test)
+[![Codecov](https://img.shields.io/codecov/c/github/crazy-max/ghaction-container-scan?logo=codecov&style=flat-square)](https://codecov.io/gh/crazy-max/ghaction-container-scan)
 
 ## :test_tube: Experimental
 
@@ -13,7 +13,7 @@ of this action in your workflow.
 
 ## About
 
-GitHub Action to check for vulnerabilities in your Docker image with
+GitHub Action to check for vulnerabilities in your container image with
 [Trivy](https://github.com/aquasecurity/trivy).
 
 ![Screenshot](.github/scan-action.png)
@@ -58,7 +58,7 @@ jobs:
           tags: user/app:latest
       -
         name: Scan for vulnerabilities
-        uses: crazy-max/docker-scan-action@master
+        uses: crazy-max/ghaction-container-scan@master
         with:
           image: user/app:latest
 ```
@@ -90,7 +90,7 @@ jobs:
           tags: user/app:latest
       -
         name: Scan for vulnerabilities
-        uses: crazy-max/docker-scan-action@master
+        uses: crazy-max/ghaction-container-scan@master
         with:
           tarball: /tmp/image.tar
 ```
@@ -121,7 +121,7 @@ jobs:
           tags: user/app:latest
       -
         name: Scan for vulnerabilities
-        uses: crazy-max/docker-scan-action@master
+        uses: crazy-max/ghaction-container-scan@master
         with:
           image: user/app:latest
           severity_threshold: HIGH
@@ -156,7 +156,7 @@ jobs:
           tags: user/app:latest
       -
         name: Scan for vulnerabilities
-        uses: crazy-max/docker-scan-action@master
+        uses: crazy-max/ghaction-container-scan@master
         with:
           image: user/app:latest
           annotations: true
@@ -194,7 +194,7 @@ jobs:
       -
         name: Scan for vulnerabilities
         id: scan
-        uses: crazy-max/docker-scan-action@master
+        uses: crazy-max/ghaction-container-scan@master
         with:
           image: user/app:latest
           dockerfile: ./Dockerfile
@@ -240,9 +240,11 @@ jobs:
           tags: user/app:latest
       -
         name: Scan for vulnerabilities
-        uses: crazy-max/docker-scan-action@master
+        id: scan
+        uses: crazy-max/ghaction-container-scan@master
         with:
-          tarball: user/app:latest
+          image: user/app:latest
+          dockerfile: ./Dockerfile
       -
         name: Build multi-platform and push
         uses: docker/build-push-action@v2
@@ -262,8 +264,8 @@ Following inputs can be used as `step.with` keys
 | Name                   | Type     | Description                        |
 |------------------------|----------|------------------------------------|
 | `trivy_version`        | String   | [Trivy CLI](https://github.com/aquasecurity/trivy) version (default `latest`) |
-| `image`                | String   | Docker image to scan (e.g. `alpine:3.7`) |
-| `tarball`              | String   | Docker image tarball path to scan |
+| `image`                | String   | Container image to scan (e.g. `alpine:3.7`) |
+| `tarball`              | String   | Container image tarball path to scan |
 | `dockerfile`           | String   | Dockerfile required to generate a sarif report |
 | `severity`             | String   | Report vulnerabilities of provided level or higher (default: `UNKNOWN,LOW,MEDIUM,HIGH,CRITICAL`) |
 | `severity_threshold`   | String   | Defines threshold for severity |

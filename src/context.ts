@@ -11,7 +11,7 @@ export const osArch: string = os.arch();
 
 export function tmpDir(): string {
   if (!_tmpDir) {
-    _tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'docker-scan-')).split(path.sep).join(path.posix.sep);
+    _tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'container-scan-')).split(path.sep).join(path.posix.sep);
   }
   return _tmpDir;
 }

@@ -50,7 +50,7 @@ exports.osPlat = os.platform();
 exports.osArch = os.arch();
 function tmpDir() {
     if (!_tmpDir) {
-        _tmpDir = fs_1.default.mkdtempSync(path_1.default.join(os.tmpdir(), 'docker-scan-')).split(path_1.default.sep).join(path_1.default.posix.sep);
+        _tmpDir = fs_1.default.mkdtempSync(path_1.default.join(os.tmpdir(), 'container-scan-')).split(path_1.default.sep).join(path_1.default.posix.sep);
     }
     return _tmpDir;
 }
@@ -207,7 +207,7 @@ function run() {
                 scanInput = inputs.tarball;
             }
             let scanResult = {};
-            yield core.group(`Scanning ${scanInput} Docker image`, () => __awaiter(this, void 0, void 0, function* () {
+            yield core.group(`Scanning ${scanInput} container image`, () => __awaiter(this, void 0, void 0, function* () {
                 scanResult = yield trivy.scan({
                     Bin: trivyBin,
                     Inputs: inputs
@@ -322,7 +322,7 @@ function run() {
                 }
             }));
             if (isUnhealthy) {
-                core.setFailed(`Docker image is unhealthy. Following your desired severity threshold (${inputs.severityThreshold}), the job has been marked as failed.`);
+                core.setFailed(`Container image is unhealthy. Following your desired severity threshold (${inputs.severityThreshold}), the job has been marked as failed.`);
             }
         }
         catch (error) {

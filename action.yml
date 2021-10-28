@@ -1,10 +1,10 @@
 # https://help.github.com/en/articles/metadata-syntax-for-github-actions
-name: 'Docker Scan'
-description: 'Check for vulnerabilities in your Docker image'
-author: 'docker'
+name: 'Container Scan'
+description: 'Check for vulnerabilities in your container image'
+author: 'crazy-max'
 branding:
-  icon: 'anchor'
-  color: 'blue'
+  icon: 'shield'
+  color: 'green'
 
 inputs:
   trivy_version:
@@ -12,10 +12,10 @@ inputs:
     default: 'latest'
     required: false
   image:
-    description: 'Docker image to scan (eg. alpine:3.7)'
+    description: 'Container image to scan (eg. alpine:3.7)'
     required: false
   tarball:
-    description: 'Docker image tarball path to scan'
+    description: 'Container image tarball path to scan'
     required: false
   dockerfile:
     description: 'Dockerfile required to generate a sarif report'

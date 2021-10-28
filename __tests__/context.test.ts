@@ -4,7 +4,7 @@ import * as path from 'path';
 import * as context from '../src/context';
 
 jest.spyOn(context, 'tmpDir').mockImplementation((): string => {
-  const tmpDir = path.join('/tmp/.docker-scan-jest').split(path.sep).join(path.posix.sep);
+  const tmpDir = path.join('/tmp/.container-scan-jest').split(path.sep).join(path.posix.sep);
   if (!fs.existsSync(tmpDir)) {
     fs.mkdirSync(tmpDir, {recursive: true});
   }
@@ -12,7 +12,7 @@ jest.spyOn(context, 'tmpDir').mockImplementation((): string => {
 });
 
 jest.spyOn(context, 'tmpNameSync').mockImplementation((): string => {
-  return path.join('/tmp/.docker-scan-jest', '.tmpname-jest').split(path.sep).join(path.posix.sep);
+  return path.join('/tmp/.container-scan-jest', '.tmpname-jest').split(path.sep).join(path.posix.sep);
 });
 
 describe('setOutput', () => {
