@@ -1,6 +1,6 @@
 {
-  "name": "docker-scan",
-  "description": "Check for vulnerabilities in your Docker image",
+  "name": "container-scan",
+  "description": "Check for vulnerabilities in your container image",
   "main": "lib/main.js",
   "scripts": {
     "build": "tsc && ncc build",
@@ -11,7 +11,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/crazy-max/docker-scan-action.git"
+    "url": "git+https://github.com/crazy-max/ghaction-container-scan.git"
   },
   "keywords": [
     "actions",
@@ -20,14 +20,8 @@
     "vulnerabilities",
     "trivy"
   ],
-  "author": "Docker",
-  "contributors": [
-    {
-      "name": "CrazyMax",
-      "url": "https://crazymax.dev"
-    }
-  ],
-  "license": "Apache-2.0",
+  "author": "CrazyMax",
+  "license": "MIT",
   "dependencies": {
     "@actions/core": "^1.6.0",
     "@actions/exec": "^1.1.0",

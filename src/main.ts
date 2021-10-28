@@ -38,7 +38,7 @@ async function run(): Promise<void> {
     }
 
     let scanResult: trivy.ScanResult = {};
-    await core.group(`Scanning ${scanInput} Docker image`, async () => {
+    await core.group(`Scanning ${scanInput} container image`, async () => {
       scanResult = await trivy.scan({
         Bin: trivyBin,
         Inputs: inputs
@@ -164,7 +164,7 @@ async function run(): Promise<void> {
       }
     });
     if (isUnhealthy) {
-      core.setFailed(`Docker image is unhealthy. Following your desired severity threshold (${inputs.severityThreshold}), the job has been marked as failed.`);
+      core.setFailed(`Container image is unhealthy. Following your desired severity threshold (${inputs.severityThreshold}), the job has been marked as failed.`);
     }
   } catch (error: any) {
     core.setFailed(error.message);
