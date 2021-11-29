@@ -27,7 +27,7 @@
     "@actions/exec": "^1.1.0",
     "@actions/http-client": "^1.0.11",
     "@actions/tool-cache": "^1.7.1",
-    "chalk": "^4.1.2",
+    "chalk": "^5.0.0",
     "lodash.truncate": "^4.4.2",
     "semver": "^7.3.5",
     "tmp": "^0.2.1"
