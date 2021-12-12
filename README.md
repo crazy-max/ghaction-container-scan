@@ -311,7 +311,7 @@ to generate sanitized tags:
   id: scan
   uses: crazy-max/ghaction-container-scan@v1
   with:
-    image: ${{ fromJSON(steps.docker_meta.outputs.json).tags[0] }}
+    image: ${{ fromJSON(steps.meta.outputs.json).tags[0] }}
     dockerfile: ./Dockerfile
 ```
 
