@@ -1,0 +1,26 @@
+name: scan
+
+on:
+  workflow_dispatch:
+    inputs:
+      image:
+        description: 'Image to scan'
+        required: true
+
+jobs:
+  image:
+    runs-on: ubuntu-latest
+    steps:
+      -
+        name: Checkout
+        uses: actions/checkout@v2
+      -
+        name: Scan for vulnerabilities
+        id: scan
+        uses: ./
+        with:
+          image: ${{ github.event.inputs.image }}
+          annotations: true
+      -
+        name: JSON result
+        run: cat ${{ steps.scan.outputs.json }}
