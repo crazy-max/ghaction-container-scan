@@ -24,6 +24,8 @@ ___
 * [Customizing](#customizing)
   * [inputs](#inputs)
   * [outputs](#outputs)
+* [Notes](#notes)
+  * [`could not parse reference: ghcr.io/UserName/myimage:latest`](#could-not-parse-reference-ghcriousernamemyimagelatest)
 * [Contributing](#contributing)
 * [License](#license)
 
@@ -53,7 +55,7 @@ jobs:
           tags: user/app:latest
       -
         name: Scan for vulnerabilities
-        uses: crazy-max/ghaction-container-scan@master
+        uses: crazy-max/ghaction-container-scan@v1
         with:
           image: user/app:latest
 ```
@@ -85,7 +87,7 @@ jobs:
           tags: user/app:latest
       -
         name: Scan for vulnerabilities
-        uses: crazy-max/ghaction-container-scan@master
+        uses: crazy-max/ghaction-container-scan@v1
         with:
           tarball: /tmp/image.tar
 ```
@@ -116,7 +118,7 @@ jobs:
           tags: user/app:latest
       -
         name: Scan for vulnerabilities
-        uses: crazy-max/ghaction-container-scan@master
+        uses: crazy-max/ghaction-container-scan@v1
         with:
           image: user/app:latest
           severity_threshold: HIGH
@@ -151,7 +153,7 @@ jobs:
           tags: user/app:latest
       -
         name: Scan for vulnerabilities
-        uses: crazy-max/ghaction-container-scan@master
+        uses: crazy-max/ghaction-container-scan@v1
         with:
           image: user/app:latest
           annotations: true
@@ -189,7 +191,7 @@ jobs:
       -
         name: Scan for vulnerabilities
         id: scan
-        uses: crazy-max/ghaction-container-scan@master
+        uses: crazy-max/ghaction-container-scan@v1
         with:
           image: user/app:latest
           dockerfile: ./Dockerfile
@@ -236,7 +238,7 @@ jobs:
       -
         name: Scan for vulnerabilities
         id: scan
-        uses: crazy-max/ghaction-container-scan@master
+        uses: crazy-max/ghaction-container-scan@v1
         with:
           image: user/app:latest
           dockerfile: ./Dockerfile
@@ -274,6 +276,70 @@ Following outputs are available
 |-------------------|---------|---------------------------------------|
 | `json`            | File    | JSON format scan result |
 | `sarif`           | File    | SARIF format scan result |
+
+## Notes
+
+### `could not parse reference: ghcr.io/UserName/myimage:latest`
+
+You may encounter this issue if you're using `github.repository` as a
+repo slug for the image input:
+
+```
+Error: 2021-11-30T09:52:13.115Z	FATAL	scan error: unable to initialize a scanner: unable to initialize a docker scanner: failed to parse the image name: could not parse reference: ghcr.io/UserName/myimage:latest
+```
+
+To fix this issue you can use our [metadata action](https://github.com/docker/metadata-action)
+to generate sanitized tags:
+
+```yaml
+-
+  name: Docker meta
+  id: meta
+  uses: docker/metadata-action@v3
+  with:
+    images: ghcr.io/${{ github.repository }}
+    tags: latest
+-
+  name: Build and push
+  uses: docker/build-push-action@v2
+  with:
+    context: .
+    push: true
+    tags: ${{ steps.meta.outputs.tags }}
+-
+  name: Scan for vulnerabilities
+  id: scan
+  uses: crazy-max/ghaction-container-scan@v1
+  with:
+    image: ${{ fromJSON(steps.docker_meta.outputs.json).tags[0] }}
+    dockerfile: ./Dockerfile
+```
+
+Or a dedicated step to sanitize the slug:
+
+```yaml
+-
+  name: Sanitize repo slug
+  uses: actions/github-script@v4
+  id: repo_slug
+  with:
+    result-encoding: string
+    script: return 'ghcr.io/${{ github.repository }}'.toLowerCase()
+-
+  name: Build and push
+  uses: docker/build-push-action@v2
+  with:
+    context: .
+    push: true
+    tags: ${{ steps.repo_slug.outputs.result }}:latest
+-
+  name: Scan for vulnerabilities
+  id: scan
+  uses: crazy-max/ghaction-container-scan@v1
+  with:
+    image: ${{ steps.repo_slug.outputs.result }}:latest
+    dockerfile: ./Dockerfile
+```
 
 ## Contributing
 
