@@ -86,7 +86,8 @@ async function run(): Promise<void> {
             annotationMsg: `${v.VulnerabilityID} - ${v.Severity} severity - ${v.Title} vulnerability in ${v.PkgName}`
           };
           if (severityThreshold && vulnSeverity >= severityThreshold) {
-            let vulnidColorized, vulnsevColorized;
+            let vulnidColorized,
+              vulnsevColorized = '';
             switch (vulnSeverity) {
               case trivy.Severity.Unknown: {
                 vulnidColorized = chalk.gray(v.VulnerabilityID);
@@ -114,11 +115,13 @@ async function run(): Promise<void> {
                 break;
               }
             }
-            const pkgTxt = `${chalk.magenta(v.PkgName)}${new Array(40 - chalk.magenta(v.PkgName).length).join(' ')}`;
-            const vulnidTxt = `${vulnidColorized}${new Array(30 - vulnidColorized.length).join(' ')}`;
-            const vulnsevTxt = `${vulnsevColorized}${new Array(20 - vulnsevColorized.length).join(' ')}`;
-            res.unhealthyMsg = `${pkgTxt} ${vulnidTxt} ${vulnsevTxt} ${v.Title}`;
-            isUnhealthy = true;
+            if (vulnidColorized.length > 0 && vulnsevColorized.length > 0) {
+              const pkgTxt = `${chalk.magenta(v.PkgName)}${new Array(40 - chalk.magenta(v.PkgName).length).join(' ')}`;
+              const vulnidTxt = `${vulnidColorized}${new Array(40 - vulnidColorized.length).join(' ')}`;
+              const vulnsevTxt = `${vulnsevColorized}${new Array(30 - vulnsevColorized.length).join(' ')}`;
+              res.unhealthyMsg = `${pkgTxt} ${vulnidTxt} ${vulnsevTxt} ${v.Title}`;
+              isUnhealthy = true;
+            }
           }
           result.push(res);
         }
