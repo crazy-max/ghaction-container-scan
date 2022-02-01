@@ -247,7 +247,7 @@ function run() {
                             annotationMsg: `${v.VulnerabilityID} - ${v.Severity} severity - ${v.Title} vulnerability in ${v.PkgName}`
                         };
                         if (severityThreshold && vulnSeverity >= severityThreshold) {
-                            let vulnidColorized, vulnsevColorized;
+                            let vulnidColorized, vulnsevColorized = '';
                             switch (vulnSeverity) {
                                 case trivy.Severity.Unknown: {
                                     vulnidColorized = chalk_1.default.gray(v.VulnerabilityID);
@@ -275,11 +275,13 @@ function run() {
                                     break;
                                 }
                             }
-                            const pkgTxt = `${chalk_1.default.magenta(v.PkgName)}${new Array(40 - chalk_1.default.magenta(v.PkgName).length).join(' ')}`;
-                            const vulnidTxt = `${vulnidColorized}${new Array(30 - vulnidColorized.length).join(' ')}`;
-                            const vulnsevTxt = `${vulnsevColorized}${new Array(20 - vulnsevColorized.length).join(' ')}`;
-                            res.unhealthyMsg = `${pkgTxt} ${vulnidTxt} ${vulnsevTxt} ${v.Title}`;
-                            isUnhealthy = true;
+                            if (vulnidColorized.length > 0 && vulnsevColorized.length > 0) {
+                                const pkgTxt = `${chalk_1.default.magenta(v.PkgName)}${new Array(40 - chalk_1.default.magenta(v.PkgName).length).join(' ')}`;
+                                const vulnidTxt = `${vulnidColorized}${new Array(40 - vulnidColorized.length).join(' ')}`;
+                                const vulnsevTxt = `${vulnsevColorized}${new Array(30 - vulnsevColorized.length).join(' ')}`;
+                                res.unhealthyMsg = `${pkgTxt} ${vulnidTxt} ${vulnsevTxt} ${v.Title}`;
+                                isUnhealthy = true;
+                            }
                         }
                         result.push(res);
                     }
