@@ -25,6 +25,7 @@ ___
   * [inputs](#inputs)
   * [outputs](#outputs)
 * [Notes](#notes)
+  * [`failed to copy the image: write /tmp/fanal-2740541230: no space left on device`](#failed-to-copy-the-image-write-tmpfanal-2740541230-no-space-left-on-device)
   * [`timeout: context deadline exceeded`](#timeout-context-deadline-exceeded)
   * [`could not parse reference: ghcr.io/UserName/myimage:latest`](#could-not-parse-reference-ghcriousernamemyimagelatest)
 * [Contributing](#contributing)
@@ -279,6 +280,23 @@ Following outputs are available
 | `sarif`           | File    | SARIF format scan result |
 
 ## Notes
+
+### `failed to copy the image: write /tmp/fanal-2740541230: no space left on device`
+
+If you encounter this error, you probably have a huge image to scan so, you may
+need to free up some space in your runner. You can remove the dotnet framework
+for example that takes around 23GB of disk space:
+
+```yaml
+      -
+        name: Remove dotnet
+        run: sudo rm -rf /usr/share/dotnet
+      -
+        name: Scan for vulnerabilities
+        uses: crazy-max/ghaction-container-scan@v1
+        with:
+          image: user/app:latest
+```
 
 ### `timeout: context deadline exceeded`
 
