@@ -672,9 +672,9 @@ function scanFormat(format, opts) {
             .getExecOutput(opts.Bin, scanArgs, {
             ignoreReturnCode: true,
             silent: false,
-            env: {
-                GITHUB_TOKEN: opts.Inputs.githubToken || ''
-            }
+            env: Object.assign({}, process.env, {
+                GITHUB_TOKEN: opts.Inputs.githubToken || process.env.GITHUB_TOKEN || ''
+            })
         })
             .then(res => {
             if (res.stderr.length > 0 && res.exitCode != 0) {
