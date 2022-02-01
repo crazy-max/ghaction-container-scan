@@ -25,6 +25,7 @@ ___
   * [inputs](#inputs)
   * [outputs](#outputs)
 * [Notes](#notes)
+  * [`timeout: context deadline exceeded`](#timeout-context-deadline-exceeded)
   * [`could not parse reference: ghcr.io/UserName/myimage:latest`](#could-not-parse-reference-ghcriousernamemyimagelatest)
 * [Contributing](#contributing)
 * [License](#license)
@@ -278,6 +279,21 @@ Following outputs are available
 | `sarif`           | File    | SARIF format scan result |
 
 ## Notes
+
+### `timeout: context deadline exceeded`
+
+This error is caused by the timeout of the `trivy` command. You can increase
+the timeout by setting `TRIVY_TIMEOUT` environment variable:
+
+```yaml
+      -
+        name: Scan for vulnerabilities
+        uses: crazy-max/ghaction-container-scan@v1
+        with:
+          image: user/app:latest
+        env:
+          TRIVY_TIMEOUT: 10m
+```
 
 ### `could not parse reference: ghcr.io/UserName/myimage:latest`
 
