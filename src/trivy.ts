@@ -135,8 +135,10 @@ async function scanFormat(format: ScanFormat, opts: ScanOptions): Promise<string
     .getExecOutput(opts.Bin, scanArgs, {
       ignoreReturnCode: true,
       silent: false,
-      env: {
-        GITHUB_TOKEN: opts.Inputs.githubToken || ''
+      env: Object.assign({}, process.env, {
+        GITHUB_TOKEN: opts.Inputs.githubToken || process.env.GITHUB_TOKEN || ''
+      }) as {
+        [key: string]: string;
       }
     })
     .then(res => {
