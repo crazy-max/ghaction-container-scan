@@ -5,7 +5,6 @@ import * as util from 'util';
 import truncate from 'lodash.truncate';
 import * as context from './context';
 import * as github from './github';
-import {getTemplate} from './trivy-sarif';
 import * as core from '@actions/core';
 import * as exec from '@actions/exec';
 import * as tc from '@actions/tool-cache';
@@ -121,8 +120,7 @@ async function scanFormat(format: ScanFormat, opts: ScanOptions): Promise<string
       scanArgs.push('--format', 'json');
       break;
     case ScanFormat.Sarif:
-      scanArgs.push('--format', 'template');
-      scanArgs.push('--template', `@${getTemplate(opts.Inputs.dockerfile)}`);
+      scanArgs.push('--format', 'sarif');
       break;
   }
   if (opts.Inputs.image) {
