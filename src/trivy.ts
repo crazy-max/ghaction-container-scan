@@ -62,7 +62,7 @@ export async function scan(opts: ScanOptions): Promise<ScanResult> {
   const jsonFile = await scanJson(opts);
   const sarifFile = await scanSarif(opts);
   const tableFile = await scanTable(opts);
-  let vulns: Array<Vulnerability> = [];
+  const vulns: Array<Vulnerability> = [];
 
   const parsed = JSON.parse(fs.readFileSync(jsonFile, {encoding: 'utf-8'}).trim());
   if (parsed.Results) {
@@ -109,7 +109,7 @@ async function scanFormat(format: ScanFormat, opts: ScanOptions): Promise<string
 
   const resFile = path.join(context.tmpDir(), `result.${format}`).split(path.sep).join(path.posix.sep);
 
-  let scanArgs: Array<string> = ['image', '--no-progress', '--output', resFile];
+  const scanArgs: Array<string> = ['image', '--no-progress', '--output', resFile];
   if (opts.Inputs.severity) {
     scanArgs.push('--severity', opts.Inputs.severity);
   }

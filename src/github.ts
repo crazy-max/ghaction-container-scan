@@ -6,7 +6,7 @@ export interface GitHubRelease {
 }
 
 export const getRelease = async (version: string): Promise<GitHubRelease | null> => {
-  const url: string = `https://github.com/aquasecurity/trivy/releases/${version}`;
+  const url = `https://github.com/aquasecurity/trivy/releases/${version}`;
   const http: httpm.HttpClient = new httpm.HttpClient('scan');
   return (await http.getJson<GitHubRelease>(url)).result;
 };

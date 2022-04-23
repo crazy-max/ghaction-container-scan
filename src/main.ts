@@ -74,8 +74,8 @@ async function run(): Promise<void> {
       unhealthyMsg?: string;
     };
 
-    let result: Array<Result> = [];
-    let isUnhealthy: boolean = false;
+    const result: Array<Result> = [];
+    let isUnhealthy = false;
 
     if (scanResult.vulns) {
       await context.asyncForEach(scanResult.vulns, async v => {
@@ -169,7 +169,7 @@ async function run(): Promise<void> {
     if (isUnhealthy) {
       core.setFailed(`Container image is unhealthy. Following your desired severity threshold (${inputs.severityThreshold}), the job has been marked as failed.`);
     }
-  } catch (error: any) {
+  } catch (error) {
     core.setFailed(error.message);
   }
 }

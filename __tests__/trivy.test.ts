@@ -1,3 +1,4 @@
+import {describe, expect, it, test} from '@jest/globals';
 import * as fs from 'fs';
 import * as path from 'path';
 import * as semver from 'semver';
@@ -9,21 +10,22 @@ describe('getVersion', () => {
     process.env[`PATH`] = `${path.dirname(trivyBin)}:${process.env[`PATH`]}`;
     expect(fs.existsSync(trivyBin)).toBe(true);
     const version = await trivy.getVersion();
-    console.log(`version: ${version}`);
     expect(semver.valid(version)).not.toBeNull();
   }, 100000);
 });
 
 describe('parseVersion', () => {
-  expect(
-    trivy.parseVersion(`Version: 0.19.2
+  it('valid', async () => {
+    expect(
+      trivy.parseVersion(`Version: 0.19.2
 Vulnerability DB:
   Type: Light
   Version: 1
   UpdatedAt: 2021-10-07 12:05:28.644797134 +0000 UTC
   NextUpdate: 2021-10-07 18:05:28.644796934 +0000 UTC
   DownloadedAt: 2021-10-07 14:13:53.4197888 +0000 UTC`)
-  ).toEqual('0.19.2');
+    ).toEqual('0.19.2');
+  });
 });
 
 describe('satisfies', () => {
@@ -38,12 +40,10 @@ describe('satisfies', () => {
 describe('install', () => {
   it('acquires latest version of trivy', async () => {
     const trivyBin = await trivy.install('latest');
-    console.log(trivyBin);
     expect(fs.existsSync(trivyBin)).toBe(true);
   }, 100000);
   it('acquires v0.19.2 version of trivy', async () => {
     const trivyBin = await trivy.install('v0.19.2');
-    console.log(trivyBin);
     expect(fs.existsSync(trivyBin)).toBe(true);
   }, 100000);
 });
