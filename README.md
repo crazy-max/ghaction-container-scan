@@ -25,6 +25,8 @@ ___
   * [inputs](#inputs)
   * [outputs](#outputs)
 * [Notes](#notes)
+  * [`GITHUB_TOKEN` Minimum Permissions](#github_token-minimum-permissions)
+  * [`Advanced Security must be enabled for this repository to use code scanning`](#advanced-security-must-be-enabled-for-this-repository-to-use-code-scanning)  
   * [`failed to copy the image: write /tmp/fanal-2740541230: no space left on device`](#failed-to-copy-the-image-write-tmpfanal-2740541230-no-space-left-on-device)
   * [`timeout: context deadline exceeded`](#timeout-context-deadline-exceeded)
   * [`could not parse reference: ghcr.io/UserName/myimage:latest`](#could-not-parse-reference-ghcriousernamemyimagelatest)
@@ -280,6 +282,27 @@ Following outputs are available
 | `sarif`           | File    | SARIF format scan result |
 
 ## Notes
+
+### GITHUB_TOKEN Minimum Permissions
+
+If you want the scan to include the Dockerfile, you'll need to checkout the repository and give the job:
+
+```yaml
+permissions:
+  contents: read
+```
+
+If you want to upload the SARIF report to GitHub Security, you'll need to add these permissions to the job:
+
+```yaml
+permissions:
+  actions: read
+  security-events: write
+```
+
+### `Advanced Security must be enabled for this repository to use code scanning`
+
+If you receive this error, it likely means you're using a private repository and trying to upload SARIF reports, which requires a org admin to enable Advanced Security for the repository.
 
 ### `failed to copy the image: write /tmp/fanal-2740541230: no space left on device`
 
