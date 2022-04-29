@@ -281,6 +281,27 @@ Following outputs are available
 
 ## Notes
 
+### GITHUB_TOKEN Minimum Permissions
+
+If you want the scan to include the Dockerfile, you'll need to checkout the repository and give the job:
+
+```yaml
+permissions:
+  contents: read
+```
+
+If you want to upload the SARIF report to GitHub Security, you'll need to add these permissions to the job:
+
+```yaml
+permissions:
+  actions: read
+  security-events: write
+```
+
+### `Advanced Security must be enabled for this repository to use code scanning.`
+
+If you receive this error, it likely means you're using a private repository and trying to upload SARIF reports, which requires a org admin to enable Advanced Security for the repository.
+
 ### `failed to copy the image: write /tmp/fanal-2740541230: no space left on device`
 
 If you encounter this error, you probably have a huge image to scan so, you may
