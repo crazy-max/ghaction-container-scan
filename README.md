@@ -52,7 +52,7 @@ jobs:
         uses: actions/checkout@v2
       -
         name: Build
-        uses: docker/build-push-action@v2
+        uses: docker/build-push-action@v3
         with:
           context: .
           push: true
@@ -81,10 +81,10 @@ jobs:
         uses: actions/checkout@v2
       -
         name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v1
+        uses: docker/setup-buildx-action@v2
       -
         name: Build
-        uses: docker/build-push-action@v2
+        uses: docker/build-push-action@v3
         with:
           context: .
           outputs: type=oci,dest=/tmp/image.tar
@@ -115,7 +115,7 @@ jobs:
         uses: actions/checkout@v2
       -
         name: Build
-        uses: docker/build-push-action@v2
+        uses: docker/build-push-action@v3
         with:
           context: .
           push: true
@@ -150,7 +150,7 @@ jobs:
         uses: actions/checkout@v2
       -
         name: Build
-        uses: docker/build-push-action@v2
+        uses: docker/build-push-action@v3
         with:
           context: .
           push: true
@@ -187,7 +187,7 @@ jobs:
         uses: actions/checkout@v2
       -
         name: Build
-        uses: docker/build-push-action@v2
+        uses: docker/build-push-action@v3
         with:
           context: .
           push: true
@@ -228,13 +228,13 @@ jobs:
         uses: actions/checkout@v2
       -
         name: Set up QEMU
-        uses: docker/setup-qemu-action@v1
+        uses: docker/setup-qemu-action@v2
       -
         name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v1
+        uses: docker/setup-buildx-action@v2
       -
         name: Build and load
-        uses: docker/build-push-action@v2
+        uses: docker/build-push-action@v3
         with:
           context: .
           load: true
@@ -248,7 +248,7 @@ jobs:
           dockerfile: ./Dockerfile
       -
         name: Build multi-platform and push
-        uses: docker/build-push-action@v2
+        uses: docker/build-push-action@v3
         with:
           context: .
           platforms: linux/amd64,linux/arm64
@@ -352,13 +352,13 @@ to generate sanitized tags:
 -
   name: Docker meta
   id: meta
-  uses: docker/metadata-action@v3
+  uses: docker/metadata-action@v4
   with:
     images: ghcr.io/${{ github.repository }}
     tags: latest
 -
   name: Build and push
-  uses: docker/build-push-action@v2
+  uses: docker/build-push-action@v3
   with:
     context: .
     push: true
@@ -384,7 +384,7 @@ Or a dedicated step to sanitize the slug:
     script: return 'ghcr.io/${{ github.repository }}'.toLowerCase()
 -
   name: Build and push
-  uses: docker/build-push-action@v2
+  uses: docker/build-push-action@v3
   with:
     context: .
     push: true
