@@ -49,7 +49,7 @@ jobs:
     steps:
       -
         name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       -
         name: Build
         uses: docker/build-push-action@v3
@@ -78,7 +78,7 @@ jobs:
     steps:
       -
         name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       -
         name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
@@ -112,7 +112,7 @@ jobs:
     steps:
       -
         name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       -
         name: Build
         uses: docker/build-push-action@v3
@@ -147,7 +147,7 @@ jobs:
     steps:
       -
         name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       -
         name: Build
         uses: docker/build-push-action@v3
@@ -184,7 +184,7 @@ jobs:
     steps:
       -
         name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       -
         name: Build
         uses: docker/build-push-action@v3
@@ -225,7 +225,7 @@ jobs:
     steps:
       -
         name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       -
         name: Set up QEMU
         uses: docker/setup-qemu-action@v2
@@ -377,7 +377,7 @@ Or a dedicated step to sanitize the slug:
 ```yaml
 -
   name: Sanitize repo slug
-  uses: actions/github-script@v4
+  uses: actions/github-script@v6
   id: repo_slug
   with:
     result-encoding: string
