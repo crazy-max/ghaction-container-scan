@@ -59,7 +59,7 @@ jobs:
           tags: user/app:latest
       -
         name: Scan for vulnerabilities
-        uses: crazy-max/ghaction-container-scan@v1
+        uses: crazy-max/ghaction-container-scan@v2
         with:
           image: user/app:latest
 ```
@@ -91,7 +91,7 @@ jobs:
           tags: user/app:latest
       -
         name: Scan for vulnerabilities
-        uses: crazy-max/ghaction-container-scan@v1
+        uses: crazy-max/ghaction-container-scan@v2
         with:
           tarball: /tmp/image.tar
 ```
@@ -122,7 +122,7 @@ jobs:
           tags: user/app:latest
       -
         name: Scan for vulnerabilities
-        uses: crazy-max/ghaction-container-scan@v1
+        uses: crazy-max/ghaction-container-scan@v2
         with:
           image: user/app:latest
           severity_threshold: HIGH
@@ -157,7 +157,7 @@ jobs:
           tags: user/app:latest
       -
         name: Scan for vulnerabilities
-        uses: crazy-max/ghaction-container-scan@v1
+        uses: crazy-max/ghaction-container-scan@v2
         with:
           image: user/app:latest
           annotations: true
@@ -195,14 +195,14 @@ jobs:
       -
         name: Scan for vulnerabilities
         id: scan
-        uses: crazy-max/ghaction-container-scan@v1
+        uses: crazy-max/ghaction-container-scan@v2
         with:
           image: user/app:latest
           dockerfile: ./Dockerfile
       -
         name: Upload SARIF file
         if: ${{ steps.scan.outputs.sarif != '' }}
-        uses: github/codeql-action/upload-sarif@v1
+        uses: github/codeql-action/upload-sarif@v2
         with:
           sarif_file: ${{ steps.scan.outputs.sarif }}
 ```
@@ -242,7 +242,7 @@ jobs:
       -
         name: Scan for vulnerabilities
         id: scan
-        uses: crazy-max/ghaction-container-scan@v1
+        uses: crazy-max/ghaction-container-scan@v2
         with:
           image: user/app:latest
           dockerfile: ./Dockerfile
@@ -262,24 +262,24 @@ jobs:
 
 Following inputs can be used as `step.with` keys
 
-| Name                   | Type     | Description                        |
-|------------------------|----------|------------------------------------|
-| `trivy_version`        | String   | [Trivy CLI](https://github.com/aquasecurity/trivy) version (default `latest`) |
-| `image`                | String   | Container image to scan (e.g. `alpine:3.7`) |
-| `tarball`              | String   | Container image tarball path to scan |
-| `dockerfile`           | String   | Dockerfile required to generate a sarif report |
-| `severity`             | String   | Report vulnerabilities of provided level or higher (default: `UNKNOWN,LOW,MEDIUM,HIGH,CRITICAL`) |
-| `severity_threshold`   | String   | Defines threshold for severity |
-| `annotations`          | Bool     | Create GitHub annotations in your workflow for vulnerabilities discovered |
+| Name                 | Type   | Description                                                                                      |
+|----------------------|--------|--------------------------------------------------------------------------------------------------|
+| `trivy_version`      | String | [Trivy CLI](https://github.com/aquasecurity/trivy) version (default `latest`)                    |
+| `image`              | String | Container image to scan (e.g. `alpine:3.7`)                                                      |
+| `tarball`            | String | Container image tarball path to scan                                                             |
+| `dockerfile`         | String | Dockerfile required to generate a sarif report                                                   |
+| `severity`           | String | Report vulnerabilities of provided level or higher (default: `UNKNOWN,LOW,MEDIUM,HIGH,CRITICAL`) |
+| `severity_threshold` | String | Defines threshold for severity                                                                   |
+| `annotations`        | Bool   | Create GitHub annotations in your workflow for vulnerabilities discovered                        |
 
 ### outputs
 
 Following outputs are available
 
-| Name              | Type    | Description                           |
-|-------------------|---------|---------------------------------------|
-| `json`            | File    | JSON format scan result |
-| `sarif`           | File    | SARIF format scan result |
+| Name    | Type | Description              |
+|---------|------|--------------------------|
+| `json`  | File | JSON format scan result  |
+| `sarif` | File | SARIF format scan result |
 
 ## Notes
 
@@ -316,7 +316,7 @@ for example that takes around 23GB of disk space:
         run: sudo rm -rf /usr/share/dotnet
       -
         name: Scan for vulnerabilities
-        uses: crazy-max/ghaction-container-scan@v1
+        uses: crazy-max/ghaction-container-scan@v2
         with:
           image: user/app:latest
 ```
@@ -329,7 +329,7 @@ the timeout by setting `TRIVY_TIMEOUT` environment variable:
 ```yaml
       -
         name: Scan for vulnerabilities
-        uses: crazy-max/ghaction-container-scan@v1
+        uses: crazy-max/ghaction-container-scan@v2
         with:
           image: user/app:latest
         env:
@@ -366,7 +366,7 @@ to generate sanitized tags:
 -
   name: Scan for vulnerabilities
   id: scan
-  uses: crazy-max/ghaction-container-scan@v1
+  uses: crazy-max/ghaction-container-scan@v2
   with:
     image: ${{ fromJSON(steps.meta.outputs.json).tags[0] }}
     dockerfile: ./Dockerfile
@@ -392,7 +392,7 @@ Or a dedicated step to sanitize the slug:
 -
   name: Scan for vulnerabilities
   id: scan
-  uses: crazy-max/ghaction-container-scan@v1
+  uses: crazy-max/ghaction-container-scan@v2
   with:
     image: ${{ steps.repo_slug.outputs.result }}:latest
     dockerfile: ./Dockerfile
