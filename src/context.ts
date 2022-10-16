@@ -3,7 +3,6 @@ import * as os from 'os';
 import path from 'path';
 import * as tmp from 'tmp';
 import * as core from '@actions/core';
-import {issueCommand} from '@actions/core/lib/command';
 
 let _tmpDir: string;
 export const osPlat: string = os.platform();
@@ -49,8 +48,3 @@ export const asyncForEach = async (array, callback) => {
     await callback(array[index], index, array);
   }
 };
-
-// FIXME: Temp fix https://github.com/actions/toolkit/issues/777
-export function setOutput(name: string, value: unknown): void {
-  issueCommand('set-output', {name}, value);
-}
