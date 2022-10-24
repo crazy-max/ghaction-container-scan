@@ -29,7 +29,7 @@
     "@actions/tool-cache": "^2.0.1",
     "chalk": "^5.1.2",
     "lodash.truncate": "^4.4.2",
-    "semver": "^7.3.7",
+    "semver": "^7.3.8",
     "tmp": "^0.2.1"
   },
   "devDependencies": {
