@@ -1,6 +1,6 @@
 [![GitHub release](https://img.shields.io/github/release/crazy-max/ghaction-container-scan.svg?style=flat-square)](https://github.com/crazy-max/ghaction-container-scan/releases/latest)
 [![GitHub marketplace](https://img.shields.io/badge/marketplace-container--scan-blue?logo=github&style=flat-square)](https://github.com/marketplace/actions/container-scan)
-[![Test workflow](https://img.shields.io/github/workflow/status/crazy-max/ghaction-container-scan/test?label=test&logo=github&style=flat-square)](https://github.com/crazy-max/ghaction-container-scan/actions?workflow=test)
+[![Test workflow](https://img.shields.io/github/actions/workflow/status/crazy-max/ghaction-container-scan/test.yml?branch=master&label=test&logo=github&style=flat-square)](https://github.com/crazy-max/ghaction-container-scan/actions?workflow=test)
 [![Codecov](https://img.shields.io/codecov/c/github/crazy-max/ghaction-container-scan?logo=codecov&style=flat-square)](https://codecov.io/gh/crazy-max/ghaction-container-scan)
 [![Become a sponsor](https://img.shields.io/badge/sponsor-crazy--max-181717.svg?logo=github&style=flat-square)](https://github.com/sponsors/crazy-max)
 [![Paypal Donate](https://img.shields.io/badge/donate-paypal-00457c.svg?logo=paypal&style=flat-square)](https://www.paypal.me/crazyws)
