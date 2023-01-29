@@ -4,9 +4,9 @@ import * as semver from 'semver';
 import * as util from 'util';
 import truncate from 'lodash.truncate';
 import * as context from './context';
-import * as github from './github';
 import * as core from '@actions/core';
 import * as exec from '@actions/exec';
+import * as httpm from '@actions/http-client';
 import * as tc from '@actions/tool-cache';
 
 export type ScanOptions = {
@@ -184,11 +184,31 @@ export function satisfies(version: string, range: string): boolean {
   return semver.satisfies(version, range) || /^[0-9a-f]{7}$/.exec(version) !== null;
 }
 
-export async function install(inputVersion: string): Promise<string> {
-  const release: github.GitHubRelease | null = await github.getRelease(inputVersion);
-  if (!release) {
-    throw new Error(`Cannot find trivy ${inputVersion} release`);
+export interface GitHubRelease {
+  id: number;
+  tag_name: string;
+  html_url: string;
+  assets: Array<string>;
+}
+
+export const getRelease = async (version: string): Promise<GitHubRelease> => {
+  const url = `https://raw.githubusercontent.com/crazy-max/ghaction-container-scan/master/.github/trivy-releases.json`;
+  const http: httpm.HttpClient = new httpm.HttpClient('ghaction-container-scan');
+  const resp: httpm.HttpClientResponse = await http.get(url);
+  const body = await resp.readBody();
+  const statusCode = resp.message.statusCode || 500;
+  if (statusCode >= 400) {
+    throw new Error(`Failed to get Trivy release ${version} from ${url} with status code ${statusCode}: ${body}`);
   }
+  const releases = <Record<string, GitHubRelease>>JSON.parse(body);
+  if (!releases[version]) {
+    throw new Error(`Cannot find Trivy release ${version} in ${url}`);
+  }
+  return releases[version];
+};
+
+export async function install(inputVersion: string): Promise<string> {
+  const release: GitHubRelease = await getRelease(inputVersion);
   core.debug(`Release ${release.tag_name} found`);
   const version = release.tag_name.replace(/^v+|v+$/g, '');
 

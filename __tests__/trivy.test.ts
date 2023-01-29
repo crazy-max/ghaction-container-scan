@@ -37,6 +37,26 @@ describe('satisfies', () => {
   });
 });
 
+describe('getRelease', () => {
+  it('returns latest Trivy GitHub release', async () => {
+    const release = await trivy.getRelease('latest');
+    expect(release).not.toBeNull();
+    expect(release?.tag_name).not.toEqual('');
+  });
+
+  it('returns v0.19.2 Trivy GitHub release', async () => {
+    const release = await trivy.getRelease('v0.19.2');
+    expect(release).not.toBeNull();
+    expect(release?.id).toEqual(46465651);
+    expect(release?.tag_name).toEqual('v0.19.2');
+    expect(release?.html_url).toEqual('https://github.com/aquasecurity/trivy/releases/tag/v0.19.2');
+  });
+
+  it('unknown release', async () => {
+    await expect(trivy.getRelease('foo')).rejects.toThrow(new Error('Cannot find Trivy release foo in https://raw.githubusercontent.com/crazy-max/ghaction-container-scan/master/.github/trivy-releases.json'));
+  });
+});
+
 describe('install', () => {
   it('acquires latest version of trivy', async () => {
     const trivyBin = await trivy.install('latest');
