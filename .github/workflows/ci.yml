@@ -53,6 +53,7 @@ jobs:
           context: ./test
           outputs: type=oci,dest=/tmp/image.tar
           tags: name/app:latest
+          provenance: false
       -
         name: Scan for vulnerabilities
         id: scan
@@ -79,6 +80,7 @@ jobs:
           context: ./test
           outputs: type=oci,dest=/tmp/image.tar
           tags: name/app:latest
+          provenance: false
       -
         name: Scan for vulnerabilities
         id: scan
