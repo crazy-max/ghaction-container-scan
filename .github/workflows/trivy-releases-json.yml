@@ -1,0 +1,56 @@
+name: trivy-releases-json
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 10 * * 0'
+  push:
+    branches:
+      - 'master'
+  pull_request:
+
+jobs:
+  generate:
+    uses: crazy-max/.github/.github/workflows/releases-json.yml@002654044825b3c2b9856af61b8a2aaf389706b1
+    with:
+      repository: aquasecurity/trivy
+      artifact_name: trivy-releases-json
+      filename: trivy-releases.json
+    secrets: inherit
+
+  open-pr:
+    runs-on: ubuntu-22.04
+    if: github.event_name != 'pull_request'
+    needs:
+      - generate
+    steps:
+      -
+        name: Checkout
+        uses: actions/checkout@v3
+      -
+        name: Download
+        uses: actions/download-artifact@v3
+        with:
+          name: trivy-releases-json
+          path: .github
+      -
+        name: Commit changes
+        run: |
+          git add -A .
+      -
+        name: Create PR
+        uses: peter-evans/create-pull-request@2b011faafdcbc9ceb11414d64d0573f37c774b04
+        with:
+          base: master
+          branch: bot/trivy-releases-json
+          commit-message: "update .github/trivy-releases.json"
+          signoff: true
+          delete-branch: true
+          title: "Update `.github/trivy-releases.json`"
+          body: |
+            Update `.github/trivy-releases.json` to keep in sync with [https://github.com/aquasecurity/trivy](https://github.com/aquasecurity/trivy).
+          draft: false

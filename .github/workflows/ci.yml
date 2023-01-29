@@ -10,9 +10,8 @@ on:
     tags:
       - 'v*'
   pull_request:
-    branches:
-      - 'master'
-      - 'releases/v*'
+    paths-ignore:
+      - '.github/trivy-releases.json'
 
 jobs:
   image:
