@@ -6,9 +6,8 @@ on:
       - 'master'
       - 'releases/v*'
   pull_request:
-    branches:
-      - 'master'
-      - 'releases/v*'
+    paths-ignore:
+      - '.github/trivy-releases.json'
 
 jobs:
   test:
