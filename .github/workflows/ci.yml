@@ -48,7 +48,7 @@ jobs:
         uses: docker/setup-buildx-action@v2
       -
         name: Build
-        uses: docker/build-push-action@v3
+        uses: docker/build-push-action@v4
         with:
           context: ./test
           outputs: type=oci,dest=/tmp/image.tar
@@ -75,7 +75,7 @@ jobs:
         uses: docker/setup-buildx-action@v2
       -
         name: Build
-        uses: docker/build-push-action@v3
+        uses: docker/build-push-action@v4
         with:
           context: ./test
           outputs: type=oci,dest=/tmp/image.tar
@@ -163,7 +163,7 @@ jobs:
           driver-opts: network=host
       -
         name: Build and load
-        uses: docker/build-push-action@v3
+        uses: docker/build-push-action@v4
         with:
           context: ./test
           file: ./test/Dockerfile
@@ -177,7 +177,7 @@ jobs:
           dockerfile: ./test/Dockerfile
       -
         name: Build multi-platform and push
-        uses: docker/build-push-action@v3
+        uses: docker/build-push-action@v4
         with:
           context: ./test
           file: ./test/Dockerfile
