@@ -52,7 +52,7 @@ jobs:
         uses: actions/checkout@v3
       -
         name: Build
-        uses: docker/build-push-action@v3
+        uses: docker/build-push-action@v4
         with:
           context: .
           push: true
@@ -84,7 +84,7 @@ jobs:
         uses: docker/setup-buildx-action@v2
       -
         name: Build
-        uses: docker/build-push-action@v3
+        uses: docker/build-push-action@v4
         with:
           context: .
           outputs: type=oci,dest=/tmp/image.tar
@@ -115,7 +115,7 @@ jobs:
         uses: actions/checkout@v3
       -
         name: Build
-        uses: docker/build-push-action@v3
+        uses: docker/build-push-action@v4
         with:
           context: .
           push: true
@@ -150,7 +150,7 @@ jobs:
         uses: actions/checkout@v3
       -
         name: Build
-        uses: docker/build-push-action@v3
+        uses: docker/build-push-action@v4
         with:
           context: .
           push: true
@@ -187,7 +187,7 @@ jobs:
         uses: actions/checkout@v3
       -
         name: Build
-        uses: docker/build-push-action@v3
+        uses: docker/build-push-action@v4
         with:
           context: .
           push: true
@@ -234,7 +234,7 @@ jobs:
         uses: docker/setup-buildx-action@v2
       -
         name: Build and load
-        uses: docker/build-push-action@v3
+        uses: docker/build-push-action@v4
         with:
           context: .
           load: true
@@ -248,7 +248,7 @@ jobs:
           dockerfile: ./Dockerfile
       -
         name: Build multi-platform and push
-        uses: docker/build-push-action@v3
+        uses: docker/build-push-action@v4
         with:
           context: .
           platforms: linux/amd64,linux/arm64
@@ -358,7 +358,7 @@ to generate sanitized tags:
     tags: latest
 -
   name: Build and push
-  uses: docker/build-push-action@v3
+  uses: docker/build-push-action@v4
   with:
     context: .
     push: true
@@ -384,7 +384,7 @@ Or a dedicated step to sanitize the slug:
     script: return 'ghcr.io/${{ github.repository }}'.toLowerCase()
 -
   name: Build and push
-  uses: docker/build-push-action@v3
+  uses: docker/build-push-action@v4
   with:
     context: .
     push: true
