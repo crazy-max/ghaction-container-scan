@@ -33,6 +33,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@actions/http-client@npm:^2.1.0":
+  version: 2.1.0
+  resolution: "@actions/http-client@npm:2.1.0"
+  dependencies:
+    tunnel: ^0.0.6
+  checksum: 25a72a952cc95fb4b3ab086da73a5754dd0957c206637cace69be2e16f018cc1b3d3c40d3bcf89ffd8a5929d5e8445594b498b50db306a50ad7536023f8e3800
+  languageName: node
+  linkType: hard
+
 "@actions/io@npm:^1.0.1, @actions/io@npm:^1.1.1":
   version: 1.1.1
   resolution: "@actions/io@npm:1.1.1"
@@ -2120,7 +2129,7 @@ __metadata:
   dependencies:
     "@actions/core": ^1.10.0
     "@actions/exec": ^1.1.1
-    "@actions/http-client": ^2.0.1
+    "@actions/http-client": ^2.1.0
     "@actions/tool-cache": ^2.0.1
     "@types/node": ^18.11.4
     "@types/semver": ^7.3.12
