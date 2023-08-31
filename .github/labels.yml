@@ -19,17 +19,14 @@
   name: "kind/bug"
   color: "b60205"
   description: ""
-  from_name: "bug"
 -
   name: "kind/dependencies"
   color: "0366d6"
   description: ""
-  from_name: "dependencies"
 -
   name: "kind/docs"
   color: "c5def5"
   description: ""
-  from_name: "documentation"
 -
   name: "kind/duplicate"
   color: "cccccc"
@@ -38,7 +35,6 @@
   name: "kind/enhancement"
   color: "0054ca"
   description: ""
-  from_name: "enhancement"
 -
   name: "kind/invalid"
   color: "e6e6e6"
