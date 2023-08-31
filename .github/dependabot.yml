@@ -5,14 +5,15 @@ updates:
     schedule:
       interval: "daily"
     labels:
-      - "dependencies"
+      - "kind/dependencies"
       - "bot"
   - package-ecosystem: "npm"
     directory: "/"
     schedule:
       interval: "daily"
+    versioning-strategy: "increase"
     allow:
       - dependency-type: "production"
     labels:
-      - "dependencies"
+      - "kind/dependencies"
       - "bot"

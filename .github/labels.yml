@@ -1,0 +1,73 @@
+## more info https://github.com/crazy-max/ghaction-github-labeler
+-
+  name: "bot"
+  color: "69cde9"
+  description: ""
+-
+  name: "good first issue"
+  color: "7057ff"
+  description: ""
+-
+  name: "help wanted"
+  color: "4caf50"
+  description: ""
+-
+  name: "area/ci"
+  color: "ed9ca9"
+  description: ""
+-
+  name: "kind/bug"
+  color: "b60205"
+  description: ""
+  from_name: "bug"
+-
+  name: "kind/dependencies"
+  color: "0366d6"
+  description: ""
+  from_name: "dependencies"
+-
+  name: "kind/docs"
+  color: "c5def5"
+  description: ""
+  from_name: "documentation"
+-
+  name: "kind/duplicate"
+  color: "cccccc"
+  description: ""
+-
+  name: "kind/enhancement"
+  color: "0054ca"
+  description: ""
+  from_name: "enhancement"
+-
+  name: "kind/invalid"
+  color: "e6e6e6"
+  description: ""
+-
+  name: "kind/upstream"
+  color: "fbca04"
+  description: ""
+-
+  name: "kind/wontfix"
+  color: "ffffff"
+  description: ""
+-
+  name: "status/automerge"
+  color: "8f4fbc"
+  description: ""
+-
+  name: "status/needs-investigation"
+  color: "e6625b"
+  description: ""
+-
+  name: "status/needs-more-info"
+  color: "795548"
+  description: ""
+-
+  name: "status/stale"
+  color: "237da0"
+  description: ""
+-
+  name: "status/triage"
+  color: "dde4b7"
+  description: ""
