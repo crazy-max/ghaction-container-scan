@@ -87,7 +87,7 @@ jobs:
         uses: docker/build-push-action@v4
         with:
           context: .
-          outputs: type=oci,dest=/tmp/image.tar
+          outputs: type=docker,dest=/tmp/image.tar
           tags: user/app:latest
       -
         name: Scan for vulnerabilities

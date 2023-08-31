@@ -55,7 +55,7 @@ jobs:
         uses: docker/build-push-action@v4
         with:
           context: ./test
-          outputs: type=oci,dest=/tmp/image.tar
+          outputs: type=docker,dest=/tmp/image.tar
           tags: name/app:latest
           provenance: false
       -
@@ -82,7 +82,7 @@ jobs:
         uses: docker/build-push-action@v4
         with:
           context: ./test
-          outputs: type=oci,dest=/tmp/image.tar
+          outputs: type=docker,dest=/tmp/image.tar
           tags: name/app:latest
           provenance: false
       -
