@@ -59,7 +59,7 @@ jobs:
           tags: user/app:latest
       -
         name: Scan for vulnerabilities
-        uses: crazy-max/ghaction-container-scan@v2
+        uses: crazy-max/ghaction-container-scan@v3
         with:
           image: user/app:latest
 ```
@@ -91,7 +91,7 @@ jobs:
           tags: user/app:latest
       -
         name: Scan for vulnerabilities
-        uses: crazy-max/ghaction-container-scan@v2
+        uses: crazy-max/ghaction-container-scan@v3
         with:
           tarball: /tmp/image.tar
 ```
@@ -122,7 +122,7 @@ jobs:
           tags: user/app:latest
       -
         name: Scan for vulnerabilities
-        uses: crazy-max/ghaction-container-scan@v2
+        uses: crazy-max/ghaction-container-scan@v3
         with:
           image: user/app:latest
           severity_threshold: HIGH
@@ -157,7 +157,7 @@ jobs:
           tags: user/app:latest
       -
         name: Scan for vulnerabilities
-        uses: crazy-max/ghaction-container-scan@v2
+        uses: crazy-max/ghaction-container-scan@v3
         with:
           image: user/app:latest
           annotations: true
@@ -195,7 +195,7 @@ jobs:
       -
         name: Scan for vulnerabilities
         id: scan
-        uses: crazy-max/ghaction-container-scan@v2
+        uses: crazy-max/ghaction-container-scan@v3
         with:
           image: user/app:latest
           dockerfile: ./Dockerfile
@@ -242,7 +242,7 @@ jobs:
       -
         name: Scan for vulnerabilities
         id: scan
-        uses: crazy-max/ghaction-container-scan@v2
+        uses: crazy-max/ghaction-container-scan@v3
         with:
           image: user/app:latest
           dockerfile: ./Dockerfile
@@ -316,7 +316,7 @@ for example that takes around 23GB of disk space:
         run: sudo rm -rf /usr/share/dotnet
       -
         name: Scan for vulnerabilities
-        uses: crazy-max/ghaction-container-scan@v2
+        uses: crazy-max/ghaction-container-scan@v3
         with:
           image: user/app:latest
 ```
@@ -329,7 +329,7 @@ the timeout by setting `TRIVY_TIMEOUT` environment variable:
 ```yaml
       -
         name: Scan for vulnerabilities
-        uses: crazy-max/ghaction-container-scan@v2
+        uses: crazy-max/ghaction-container-scan@v3
         with:
           image: user/app:latest
         env:
@@ -366,7 +366,7 @@ to generate sanitized tags:
 -
   name: Scan for vulnerabilities
   id: scan
-  uses: crazy-max/ghaction-container-scan@v2
+  uses: crazy-max/ghaction-container-scan@v3
   with:
     image: ${{ fromJSON(steps.meta.outputs.json).tags[0] }}
     dockerfile: ./Dockerfile
@@ -392,7 +392,7 @@ Or a dedicated step to sanitize the slug:
 -
   name: Scan for vulnerabilities
   id: scan
-  uses: crazy-max/ghaction-container-scan@v2
+  uses: crazy-max/ghaction-container-scan@v3
   with:
     image: ${{ steps.repo_slug.outputs.result }}:latest
     dockerfile: ./Dockerfile
@@ -400,11 +400,10 @@ Or a dedicated step to sanitize the slug:
 
 ## Contributing
 
-Want to contribute? Awesome! The most basic way to show your support is to star the project, or to raise issues. If
-you want to open a pull request, please read the [contributing guidelines](.github/CONTRIBUTING.md).
-
-You can also support this project by [**becoming a sponsor on GitHub**](https://github.com/sponsors/crazy-max) or by
-making a [Paypal donation](https://www.paypal.me/crazyws) to ensure this journey continues indefinitely!
+Want to contribute? Awesome! The most basic way to show your support is to star
+the project, or to raise issues. You can also support this project by [**becoming a sponsor on GitHub**](https://github.com/sponsors/crazy-max)
+or by making a [PayPal donation](https://www.paypal.me/crazyws) to ensure this
+journey continues indefinitely!
 
 Thanks again for your support, it is much appreciated! :pray:
 
