@@ -2221,37 +2221,6 @@
       "https://github.com/aquasecurity/trivy/releases/download/v0.31.1/trivy_0.31.1_macOS-ARM64.tar.gz"
     ]
   },
-  "v0.31.0": {
-    "id": 74488770,
-    "tag_name": "v0.31.0",
-    "html_url": "https://github.com/aquasecurity/trivy/releases/tag/v0.31.0",
-    "assets": [
-      "https://github.com/aquasecurity/trivy/releases/download/v0.31.0/bom.json",
-      "https://github.com/aquasecurity/trivy/releases/download/v0.31.0/trivy_0.31.0_FreeBSD-32bit.tar.gz",
-      "https://github.com/aquasecurity/trivy/releases/download/v0.31.0/trivy_0.31.0_FreeBSD-64bit.tar.gz",
-      "https://github.com/aquasecurity/trivy/releases/download/v0.31.0/trivy_0.31.0_Linux-32bit.deb",
-      "https://github.com/aquasecurity/trivy/releases/download/v0.31.0/trivy_0.31.0_Linux-32bit.rpm",
-      "https://github.com/aquasecurity/trivy/releases/download/v0.31.0/trivy_0.31.0_Linux-32bit.tar.gz",
-      "https://github.com/aquasecurity/trivy/releases/download/v0.31.0/trivy_0.31.0_Linux-64bit.deb",
-      "https://github.com/aquasecurity/trivy/releases/download/v0.31.0/trivy_0.31.0_Linux-64bit.rpm",
-      "https://github.com/aquasecurity/trivy/releases/download/v0.31.0/trivy_0.31.0_Linux-64bit.tar.gz",
-      "https://github.com/aquasecurity/trivy/releases/download/v0.31.0/trivy_0.31.0_Linux-ARM.deb",
-      "https://github.com/aquasecurity/trivy/releases/download/v0.31.0/trivy_0.31.0_Linux-ARM.rpm",
-      "https://github.com/aquasecurity/trivy/releases/download/v0.31.0/trivy_0.31.0_Linux-ARM.tar.gz",
-      "https://github.com/aquasecurity/trivy/releases/download/v0.31.0/trivy_0.31.0_Linux-ARM64.deb",
-      "https://github.com/aquasecurity/trivy/releases/download/v0.31.0/trivy_0.31.0_Linux-ARM64.rpm",
-      "https://github.com/aquasecurity/trivy/releases/download/v0.31.0/trivy_0.31.0_Linux-ARM64.tar.gz",
-      "https://github.com/aquasecurity/trivy/releases/download/v0.31.0/trivy_0.31.0_Linux-PPC64LE.deb",
-      "https://github.com/aquasecurity/trivy/releases/download/v0.31.0/trivy_0.31.0_Linux-PPC64LE.rpm",
-      "https://github.com/aquasecurity/trivy/releases/download/v0.31.0/trivy_0.31.0_Linux-PPC64LE.tar.gz",
-      "https://github.com/aquasecurity/trivy/releases/download/v0.31.0/trivy_0.31.0_Linux-s390x.deb",
-      "https://github.com/aquasecurity/trivy/releases/download/v0.31.0/trivy_0.31.0_Linux-s390x.rpm",
-      "https://github.com/aquasecurity/trivy/releases/download/v0.31.0/trivy_0.31.0_Linux-s390x.tar.gz",
-      "https://github.com/aquasecurity/trivy/releases/download/v0.31.0/trivy_0.31.0_checksums.txt",
-      "https://github.com/aquasecurity/trivy/releases/download/v0.31.0/trivy_0.31.0_macOS-64bit.tar.gz",
-      "https://github.com/aquasecurity/trivy/releases/download/v0.31.0/trivy_0.31.0_macOS-ARM64.tar.gz"
-    ]
-  },
   "v0.30.4": {
     "id": 72894486,
     "tag_name": "v0.30.4",
