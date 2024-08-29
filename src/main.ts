@@ -116,9 +116,9 @@ async function run(): Promise<void> {
               }
             }
             if (vulnidColorized.length > 0 && vulnsevColorized.length > 0) {
-              const pkgTxt = `${chalk.magenta(v.PkgName)}${new Array(40 - chalk.magenta(v.PkgName).length).join(' ')}`;
-              const vulnidTxt = `${vulnidColorized}${new Array(40 - vulnidColorized.length).join(' ')}`;
-              const vulnsevTxt = `${vulnsevColorized}${new Array(30 - vulnsevColorized.length).join(' ')}`;
+              const pkgTxt = `${chalk.magenta(v.PkgName).padEnd(40)}`;
+              const vulnidTxt = `${vulnidColorized.padEnd(40)}`;
+              const vulnsevTxt = `${vulnsevColorized.padEnd(30)}`;
               res.unhealthyMsg = `${pkgTxt} ${vulnidTxt} ${vulnsevTxt} ${v.Title}`;
               isUnhealthy = true;
             }
