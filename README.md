@@ -159,7 +159,7 @@ jobs:
         uses: crazy-max/ghaction-container-scan@v3
         with:
           image: user/app:latest
-          ignoreo_unfixed: true
+          ignore_unfixed: true
 ```
 
 ![Severity threshold](.github/threshold.png)
