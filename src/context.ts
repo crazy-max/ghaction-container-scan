@@ -28,6 +28,7 @@ export interface Inputs {
   severityThreshold?: string;
   annotations?: boolean;
   githubToken?: string;
+  ignoreUnfixed?: boolean;
 }
 
 export async function getInputs(): Promise<Inputs> {
@@ -39,7 +40,8 @@ export async function getInputs(): Promise<Inputs> {
     severity: core.getInput('severity'),
     severityThreshold: core.getInput('severity_threshold'),
     annotations: core.getBooleanInput('annotations'),
-    githubToken: core.getInput('github_token')
+    githubToken: core.getInput('github_token'),
+    ignoreUnfixed: core.getBooleanInput('ignore_unfixed')
   };
 }
 
