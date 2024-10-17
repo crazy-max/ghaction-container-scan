@@ -14,24 +14,26 @@ GitHub Action to check for vulnerabilities in your container image with
 
 ___
 
-* [Usage](#usage)
-  * [Scan image](#scan-image)
-  * [Scan tarball](#scan-tarball)
-  * [Severity threshold](#severity-threshold)
-  * [GitHub annotations](#github-annotations)
-  * [Upload to GitHub Code Scanning](#upload-to-github-code-scanning)
-  * [Build, scan and push your image](#build-scan-and-push-your-image)
-* [Customizing](#customizing)
-  * [inputs](#inputs)
-  * [outputs](#outputs)
-* [Notes](#notes)
-  * [`GITHUB_TOKEN` Minimum Permissions](#github_token-minimum-permissions)
-  * [`Advanced Security must be enabled for this repository to use code scanning`](#advanced-security-must-be-enabled-for-this-repository-to-use-code-scanning)  
-  * [`failed to copy the image: write /tmp/fanal-2740541230: no space left on device`](#failed-to-copy-the-image-write-tmpfanal-2740541230-no-space-left-on-device)
-  * [`timeout: context deadline exceeded`](#timeout-context-deadline-exceeded)
-  * [`could not parse reference: ghcr.io/UserName/myimage:latest`](#could-not-parse-reference-ghcriousernamemyimagelatest)
-* [Contributing](#contributing)
-* [License](#license)
+- [About](#about)
+- [Usage](#usage)
+  - [Scan image](#scan-image)
+  - [Scan tarball](#scan-tarball)
+  - [Severity threshold](#severity-threshold)
+  - [Ignore Unfixed Vulnerabilities](#ignore-unfixed-vulnerabilities)
+  - [GitHub annotations](#github-annotations)
+  - [Upload to GitHub Code Scanning](#upload-to-github-code-scanning)
+  - [Build, scan and push your image](#build-scan-and-push-your-image)
+- [Customizing](#customizing)
+  - [inputs](#inputs)
+  - [outputs](#outputs)
+- [Notes](#notes)
+  - [GITHUB\_TOKEN Minimum Permissions](#github_token-minimum-permissions)
+  - [`Advanced Security must be enabled for this repository to use code scanning`](#advanced-security-must-be-enabled-for-this-repository-to-use-code-scanning)
+  - [`failed to copy the image: write /tmp/fanal-2740541230: no space left on device`](#failed-to-copy-the-image-write-tmpfanal-2740541230-no-space-left-on-device)
+  - [`timeout: context deadline exceeded`](#timeout-context-deadline-exceeded)
+  - [`could not parse reference: ghcr.io/UserName/myimage:latest`](#could-not-parse-reference-ghcriousernamemyimagelatest)
+- [Contributing](#contributing)
+- [License](#license)
 
 ## Usage
 
@@ -126,6 +128,38 @@ jobs:
         with:
           image: user/app:latest
           severity_threshold: HIGH
+```
+
+### Ignore Unfixed Vulnerabilities
+
+By default, Trivy also detects unpatched/unfixed vulnerabilities. This means you can't fix these vulnerabilities even if you update all packages. If you would like to ignore them:
+
+```yaml
+name: ci
+
+on:
+  push:
+
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    steps:
+      -
+        name: Checkout
+        uses: actions/checkout@v3
+      -
+        name: Build
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          push: true
+          tags: user/app:latest
+      -
+        name: Scan for vulnerabilities
+        uses: crazy-max/ghaction-container-scan@v3
+        with:
+          image: user/app:latest
+          ignoreUnfixed: true
 ```
 
 ![Severity threshold](.github/threshold.png)
