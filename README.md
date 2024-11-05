@@ -14,7 +14,6 @@ GitHub Action to check for vulnerabilities in your container image with
 
 ___
 
-* [About](#about)
 * [Usage](#usage)
   * [Scan image](#scan-image)
   * [Scan tarball](#scan-tarball)
