@@ -26,7 +26,7 @@ ___
   * [inputs](#inputs)
   * [outputs](#outputs)
 * [Notes](#notes)
-  * [GITHUB_TOKEN Minimum Permissions](#github_token-minimum-permissions)
+  * [`GITHUB_TOKEN` Minimum Permissions](#github_token-minimum-permissions)
   * [`Advanced Security must be enabled for this repository to use code scanning`](#advanced-security-must-be-enabled-for-this-repository-to-use-code-scanning)  
   * [`failed to copy the image: write /tmp/fanal-2740541230: no space left on device`](#failed-to-copy-the-image-write-tmpfanal-2740541230-no-space-left-on-device)
   * [`timeout: context deadline exceeded`](#timeout-context-deadline-exceeded)
