@@ -18,6 +18,7 @@ ___
   * [Scan image](#scan-image)
   * [Scan tarball](#scan-tarball)
   * [Severity threshold](#severity-threshold)
+  * [Ignore Unfixed Vulnerabilities](#ignore-unfixed-vulnerabilities)
   * [GitHub annotations](#github-annotations)
   * [Upload to GitHub Code Scanning](#upload-to-github-code-scanning)
   * [Build, scan and push your image](#build-scan-and-push-your-image)
@@ -126,6 +127,38 @@ jobs:
         with:
           image: user/app:latest
           severity_threshold: HIGH
+```
+
+### Ignore Unfixed Vulnerabilities
+
+By default, Trivy also detects unpatched/unfixed vulnerabilities. This means you can't fix these vulnerabilities even if you update all packages. If you would like to ignore them:
+
+```yaml
+name: ci
+
+on:
+  push:
+
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    steps:
+      -
+        name: Checkout
+        uses: actions/checkout@v3
+      -
+        name: Build
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          push: true
+          tags: user/app:latest
+      -
+        name: Scan for vulnerabilities
+        uses: crazy-max/ghaction-container-scan@v3
+        with:
+          image: user/app:latest
+          ignore_unfixed: true
 ```
 
 ![Severity threshold](.github/threshold.png)
