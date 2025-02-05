@@ -34,6 +34,10 @@ inputs:
     description: 'GitHub Token as provided by secrets'
     default: ${{ github.token }}
     required: false
+  ignore_unfixed:
+    description: 'Ignore Unfixed CVEs'
+    default: 'false'
+    required: false
 
 outputs:
   json:
