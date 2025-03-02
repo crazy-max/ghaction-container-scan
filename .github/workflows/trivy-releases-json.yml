@@ -29,6 +29,10 @@ jobs:
   open-pr:
     runs-on: ubuntu-22.04
     if: github.event_name != 'pull_request'
+    permissions:
+      # required to create PR
+      contents: write
+      pull-requests: write
     needs:
       - generate
     steps:
