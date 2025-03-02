@@ -268,7 +268,7 @@ Following inputs can be used as `step.with` keys
 | `image`              | String | Container image to scan (e.g. `alpine:3.7`)                                                      |
 | `tarball`            | String | Container image tarball path to scan                                                             |
 | `dockerfile`         | String | Dockerfile required to generate a sarif report                                                   |
-| `severity`           | String | Report vulnerabilities of provided level or higher (default: `UNKNOWN,LOW,MEDIUM,HIGH,CRITICAL`) |
+| `severity`           | String | List of severity level(s) to report (default: `UNKNOWN,LOW,MEDIUM,HIGH,CRITICAL`) |
 | `severity_threshold` | String | Defines threshold for severity                                                                   |
 | `annotations`        | Bool   | Create GitHub annotations in your workflow for vulnerabilities discovered                        |
 
