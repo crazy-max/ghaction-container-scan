@@ -4,6 +4,10 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
+# https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#permissions
+permissions:
+  contents: read
+
 on:
   workflow_dispatch:
   schedule:
@@ -25,6 +29,10 @@ jobs:
   open-pr:
     runs-on: ubuntu-22.04
     if: github.event_name != 'pull_request'
+    permissions:
+      # required to create PR
+      contents: write
+      pull-requests: write
     needs:
       - generate
     steps:
@@ -43,7 +51,7 @@ jobs:
           git add -A .
       -
         name: Create PR
-        uses: peter-evans/create-pull-request@c5a7806660adbe173f04e3e038b0ccdcd758773c
+        uses: peter-evans/create-pull-request@5e914681df9dc83aa4e4905692ca88beb2f9e91f
         with:
           base: master
           branch: bot/trivy-releases-json
