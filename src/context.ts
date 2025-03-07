@@ -26,9 +26,9 @@ export interface Inputs {
   dockerfile?: string;
   severity?: string;
   severityThreshold?: string;
+  ignoreUnfixed?: boolean;
   annotations?: boolean;
   githubToken?: string;
-  ignoreUnfixed?: boolean;
 }
 
 export async function getInputs(): Promise<Inputs> {
@@ -39,9 +39,9 @@ export async function getInputs(): Promise<Inputs> {
     dockerfile: core.getInput('dockerfile'),
     severity: core.getInput('severity'),
     severityThreshold: core.getInput('severity_threshold'),
+    ignoreUnfixed: core.getBooleanInput('ignore_unfixed'),
     annotations: core.getBooleanInput('annotations'),
-    githubToken: core.getInput('github_token'),
-    ignoreUnfixed: core.getBooleanInput('ignore_unfixed')
+    githubToken: core.getInput('github_token')
   };
 }
 

@@ -129,38 +129,6 @@ jobs:
           severity_threshold: HIGH
 ```
 
-### Ignore Unfixed Vulnerabilities
-
-By default, Trivy also detects unpatched/unfixed vulnerabilities. This means you can't fix these vulnerabilities even if you update all packages. If you would like to ignore them:
-
-```yaml
-name: ci
-
-on:
-  push:
-
-jobs:
-  scan:
-    runs-on: ubuntu-latest
-    steps:
-      -
-        name: Checkout
-        uses: actions/checkout@v3
-      -
-        name: Build
-        uses: docker/build-push-action@v4
-        with:
-          context: .
-          push: true
-          tags: user/app:latest
-      -
-        name: Scan for vulnerabilities
-        uses: crazy-max/ghaction-container-scan@v3
-        with:
-          image: user/app:latest
-          ignore_unfixed: true
-```
-
 ![Severity threshold](.github/threshold.png)
 
 ### GitHub annotations
@@ -303,6 +271,7 @@ Following inputs can be used as `step.with` keys
 | `dockerfile`         | String | Dockerfile required to generate a sarif report                                                   |
 | `severity`           | String | Report vulnerabilities of provided level or higher (default: `UNKNOWN,LOW,MEDIUM,HIGH,CRITICAL`) |
 | `severity_threshold` | String | Defines threshold for severity                                                                   |
+| `ignore_unfixed`     | Bool   | Ignore Unfixed CVEs (Common Vulnerabilities and Exposures)                                       | 
 | `annotations`        | Bool   | Create GitHub annotations in your workflow for vulnerabilities discovered                        |
 
 ### outputs
