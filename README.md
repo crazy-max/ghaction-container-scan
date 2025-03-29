@@ -270,6 +270,7 @@ Following inputs can be used as `step.with` keys
 | `dockerfile`         | String | Dockerfile required to generate a sarif report                                                   |
 | `severity`           | String | Report vulnerabilities of provided level or higher (default: `UNKNOWN,LOW,MEDIUM,HIGH,CRITICAL`) |
 | `severity_threshold` | String | Defines threshold for severity                                                                   |
+| `ignore_unfixed`     | Bool   | Ignore Unfixed CVEs (Common Vulnerabilities and Exposures)                                       | 
 | `annotations`        | Bool   | Create GitHub annotations in your workflow for vulnerabilities discovered                        |
 
 ### outputs

@@ -26,6 +26,10 @@ inputs:
   severity_threshold:
     description: 'Defines threshold for severity'
     required: false
+  ignore_unfixed:
+    description: 'Ignore Unfixed CVEs'
+    default: 'false'
+    required: false
   annotations:
     description: 'Create GitHub annotations in your workflow for vulnerabilities discovered'
     default: 'false'
