@@ -27,7 +27,7 @@ inputs:
     description: 'Defines threshold for severity'
     required: false
   ignore_unfixed:
-    description: 'Ignore Unfixed CVEs'
+    description: 'Ignore unfixed vulnerabilities'
     default: 'false'
     required: false
   annotations:
