@@ -120,6 +120,19 @@ jobs:
           image: ${{ matrix.image }}
           annotations: true
 
+  ignore_unfixed:
+    runs-on: ubuntu-latest
+    steps:
+      -
+        name: Checkout
+        uses: actions/checkout@v4
+      -
+        name: Scan for vulnerabilities
+        uses: ./
+        with:
+          image: alpine:3.9
+          ignore_unfixed: true
+
   threshold:
     runs-on: ubuntu-latest
     strategy:

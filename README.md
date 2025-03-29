@@ -260,7 +260,7 @@ jobs:
 
 ### inputs
 
-Following inputs can be used as `step.with` keys
+The following inputs can be used as `step.with` keys:
 
 | Name                 | Type   | Description                                                                                      |
 |----------------------|--------|--------------------------------------------------------------------------------------------------|
@@ -270,11 +270,12 @@ Following inputs can be used as `step.with` keys
 | `dockerfile`         | String | Dockerfile required to generate a sarif report                                                   |
 | `severity`           | String | Report vulnerabilities of provided level or higher (default: `UNKNOWN,LOW,MEDIUM,HIGH,CRITICAL`) |
 | `severity_threshold` | String | Defines threshold for severity                                                                   |
+| `ignore_unfixed`     | Bool   | Ignore unfixed vulnerabilities                                                                   | 
 | `annotations`        | Bool   | Create GitHub annotations in your workflow for vulnerabilities discovered                        |
 
 ### outputs
 
-Following outputs are available
+The following outputs are available:
 
 | Name    | Type | Description              |
 |---------|------|--------------------------|
@@ -302,11 +303,13 @@ permissions:
 
 ### `Advanced Security must be enabled for this repository to use code scanning`
 
-If you receive this error, it likely means you're using a private repository and trying to upload SARIF reports, which requires a org admin to enable Advanced Security for the repository.
+If you receive this error, it likely means you're using a private repository
+and trying to upload SARIF reports, which requires an org admin to enable
+Advanced Security for the repository.
 
 ### `failed to copy the image: write /tmp/fanal-2740541230: no space left on device`
 
-If you encounter this error, you probably have a huge image to scan so, you may
+If you encounter this error, you probably have a huge image to scan so you may
 need to free up some space in your runner. You can remove the dotnet framework
 for example that takes around 23GB of disk space:
 

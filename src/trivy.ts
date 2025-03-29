@@ -112,6 +112,9 @@ async function scanFormat(format: ScanFormat, opts: ScanOptions): Promise<string
   if (opts.Inputs.severity) {
     scanArgs.push('--severity', opts.Inputs.severity);
   }
+  if (opts.Inputs.ignoreUnfixed) {
+    scanArgs.push('--ignore-unfixed');
+  }
   switch (format) {
     case ScanFormat.Table:
       scanArgs.push('--format', 'table');
