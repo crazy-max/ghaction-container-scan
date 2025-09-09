@@ -2205,10 +2205,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"chalk@npm:^5.4.1":
-  version: 5.4.1
-  resolution: "chalk@npm:5.4.1"
-  checksum: 0c656f30b782fed4d99198825c0860158901f449a6b12b818b0aabad27ec970389e7e8767d0e00762175b23620c812e70c4fd92c0210e55fc2d993638b74e86e
+"chalk@npm:^5.6.2":
+  version: 5.6.2
+  resolution: "chalk@npm:5.6.2"
+  checksum: 4ee2d47a626d79ca27cb5299ecdcce840ef5755e287412536522344db0fc51ca0f6d6433202332c29e2288c6a90a2b31f3bd626bc8c14743b6b6ee28abd3b796
   languageName: node
   linkType: hard
 
@@ -2340,7 +2340,7 @@ __metadata:
     "@typescript-eslint/eslint-plugin": ^6.6.0
     "@typescript-eslint/parser": ^6.6.0
     "@vercel/ncc": ^0.38.0
-    chalk: ^5.4.1
+    chalk: ^5.6.2
     dotenv: ^16.3.1
     eslint: ^8.49.0
     eslint-config-prettier: ^9.0.0
