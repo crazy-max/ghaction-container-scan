@@ -41,7 +41,7 @@ jobs:
         uses: actions/checkout@v4
       -
         name: Download
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v7
         with:
           name: trivy-releases-json
           path: .github
