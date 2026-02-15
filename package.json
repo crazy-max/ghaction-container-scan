@@ -1,6 +1,7 @@
 {
   "name": "container-scan",
   "description": "Check for vulnerabilities in your container image",
+  "type": "module",
   "main": "src/main.ts",
   "scripts": {
     "build": "ncc build src/main.ts --source-map --minify --license licenses.txt",

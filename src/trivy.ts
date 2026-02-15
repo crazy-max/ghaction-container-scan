@@ -3,7 +3,7 @@ import * as path from 'path';
 import * as semver from 'semver';
 import * as util from 'util';
 import truncate from 'lodash.truncate';
-import * as context from './context';
+import * as context from './context.js';
 import * as core from '@actions/core';
 import * as exec from '@actions/exec';
 import * as httpm from '@actions/http-client';

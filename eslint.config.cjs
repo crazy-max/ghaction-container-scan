@@ -35,7 +35,7 @@ module.exports = defineConfig([
       },
       parser: tsParser,
       ecmaVersion: 2023,
-      sourceType: 'commonjs'
+      sourceType: 'module'
     },
 
     rules: {

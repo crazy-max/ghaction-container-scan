@@ -2,9 +2,9 @@ process.env.FORCE_COLOR = '2';
 
 import chalk from 'chalk';
 import fs from 'fs';
-import * as context from './context';
-import * as trivy from './trivy';
-import * as stateHelper from './state-helper';
+import * as context from './context.js';
+import * as trivy from './trivy.js';
+import * as stateHelper from './state-helper.js';
 import * as core from '@actions/core';
 
 async function run(): Promise<void> {
