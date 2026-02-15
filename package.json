@@ -35,7 +35,7 @@
     "chalk": "^5.4.1",
     "lodash.truncate": "^4.4.2",
     "semver": "^7.7.2",
-    "tmp": "^0.2.3"
+    "tmp": "^0.2.5"
   },
   "devDependencies": {
     "@types/node": "^20.6.0",
