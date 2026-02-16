@@ -23,8 +23,9 @@ module.exports = {
     '^@actions/http-client/lib/auth$': '<rootDir>/node_modules/@actions/http-client/lib/auth.js',
     '^@actions/http-client/lib/interfaces$': '<rootDir>/node_modules/@actions/http-client/lib/interfaces.js',
     '^@actions/http-client/lib/proxy$': '<rootDir>/node_modules/@actions/http-client/lib/proxy.js',
-    '^@actions/io$': '<rootDir>/node_modules/@actions/exec/node_modules/@actions/io/lib/io.js',
-    '^@actions/io/lib/io-util$': '<rootDir>/node_modules/@actions/exec/node_modules/@actions/io/lib/io-util.js',
+    '^@actions/tool-cache$': '<rootDir>/node_modules/@actions/tool-cache/lib/tool-cache.js',
+    '^@actions/io$': '<rootDir>/node_modules/@actions/io/lib/io.js',
+    '^@actions/io/lib/io-util$': '<rootDir>/node_modules/@actions/io/lib/io-util.js',
     '^(\\.{1,2}/.*)\\.js$': '$1'
   },
   collectCoverageFrom: ['src/**/{!(main.ts),}.ts'],
