@@ -34,7 +34,7 @@ jobs:
     steps:
       -
         name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
       -
         name: Scan for vulnerabilities
         id: scan
@@ -50,7 +50,7 @@ jobs:
     steps:
       -
         name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
       -
         name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
@@ -77,7 +77,7 @@ jobs:
     steps:
       -
         name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
       -
         name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
@@ -112,7 +112,7 @@ jobs:
     steps:
       -
         name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
       -
         name: Scan for vulnerabilities
         uses: ./
@@ -125,7 +125,7 @@ jobs:
     steps:
       -
         name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
       -
         name: Scan for vulnerabilities
         uses: ./
@@ -146,7 +146,7 @@ jobs:
     steps:
       -
         name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
       -
         name: Scan for vulnerabilities
         continue-on-error: true
@@ -167,7 +167,7 @@ jobs:
     steps:
       -
         name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
       -
         name: Docker meta
         id: meta
