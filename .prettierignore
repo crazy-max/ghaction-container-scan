@@ -4,3 +4,7 @@ jspm_packages/
 
 # yarn v2
 .yarn/
+
+# Generated artifacts
+coverage/
+dist/
