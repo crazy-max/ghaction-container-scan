@@ -31,7 +31,7 @@
   "dependencies": {
     "@actions/core": "^1.11.1",
     "@actions/exec": "^1.1.1",
-    "@actions/http-client": "^2.2.3",
+    "@actions/http-client": "^4.0.0",
     "@actions/tool-cache": "^2.0.2",
     "chalk": "^5.6.2",
     "lodash.truncate": "^4.4.2",
