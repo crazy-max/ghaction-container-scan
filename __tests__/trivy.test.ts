@@ -1,8 +1,10 @@
-import {describe, expect, it, test} from '@jest/globals';
+import {describe, expect, it, test} from 'vitest';
 import * as fs from 'fs';
 import * as path from 'path';
 import * as semver from 'semver';
 import * as trivy from '../src/trivy';
+
+const fixturesDir = path.join(process.cwd(), '__tests__', 'fixtures');
 
 describe('getVersion', () => {
   it('valid', async () => {
@@ -77,7 +79,7 @@ describe('scan', () => {
       Inputs: {
         trivyVersion: 'latest',
         image: 'alpine:3.9',
-        dockerfile: path.join(__dirname, 'fixtures', 'Dockerfile')
+        dockerfile: path.join(fixturesDir, 'Dockerfile')
       }
     });
     expect(scanResult.table).not.toBeUndefined();
