@@ -5,22 +5,28 @@ module.exports = {
   setupFiles: ['dotenv/config'],
   testMatch: ['**/*.test.ts'],
   transform: {
-    '^.+\\.ts$': [
+    '^.+\\.[tj]s$': [
       'ts-jest',
       {
-        useESM: true
+        useESM: false,
+        tsconfig: {
+          allowJs: true
+        }
       }
     ]
   },
+  transformIgnorePatterns: ['/node_modules/(?!@actions/)'],
   moduleNameMapper: {
     '^@actions/core$': '<rootDir>/node_modules/@actions/core/lib/core.js',
-    '^@actions/exec$': '<rootDir>/node_modules/@actions/core/node_modules/@actions/exec/lib/exec.js',
-    '^@actions/http-client$': '<rootDir>/node_modules/@actions/core/node_modules/@actions/http-client/lib/index.js',
-    '^@actions/http-client/lib/auth$': '<rootDir>/node_modules/@actions/core/node_modules/@actions/http-client/lib/auth.js',
-    '^@actions/http-client/lib/interfaces$': '<rootDir>/node_modules/@actions/core/node_modules/@actions/http-client/lib/interfaces.js',
+    '^@actions/exec$': '<rootDir>/node_modules/@actions/exec/lib/exec.js',
+    '^@actions/http-client$': '<rootDir>/node_modules/@actions/http-client/lib/index.js',
+    '^@actions/http-client/lib/auth$': '<rootDir>/node_modules/@actions/http-client/lib/auth.js',
+    '^@actions/http-client/lib/interfaces$': '<rootDir>/node_modules/@actions/http-client/lib/interfaces.js',
+    '^@actions/http-client/lib/proxy$': '<rootDir>/node_modules/@actions/http-client/lib/proxy.js',
+    '^@actions/io$': '<rootDir>/node_modules/@actions/exec/node_modules/@actions/io/lib/io.js',
+    '^@actions/io/lib/io-util$': '<rootDir>/node_modules/@actions/exec/node_modules/@actions/io/lib/io-util.js',
     '^(\\.{1,2}/.*)\\.js$': '$1'
   },
-  extensionsToTreatAsEsm: ['.ts'],
   collectCoverageFrom: ['src/**/{!(main.ts),}.ts'],
   coveragePathIgnorePatterns: ['dist/', 'node_modules/', '__tests__/'],
   verbose: true
