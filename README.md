@@ -48,18 +48,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       -
-        name: Checkout
-        uses: actions/checkout@v3
-      -
         name: Build
-        uses: docker/build-push-action@v4
+        uses: docker/build-push-action@v6
         with:
-          context: .
           push: true
           tags: user/app:latest
       -
         name: Scan for vulnerabilities
-        uses: crazy-max/ghaction-container-scan@v3
+        uses: crazy-max/ghaction-container-scan@v4
         with:
           image: user/app:latest
 ```
@@ -77,21 +73,17 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       -
-        name: Checkout
-        uses: actions/checkout@v3
-      -
         name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2
+        uses: docker/setup-buildx-action@v3
       -
         name: Build
-        uses: docker/build-push-action@v4
+        uses: docker/build-push-action@v6
         with:
-          context: .
           outputs: type=docker,dest=/tmp/image.tar
           tags: user/app:latest
       -
         name: Scan for vulnerabilities
-        uses: crazy-max/ghaction-container-scan@v3
+        uses: crazy-max/ghaction-container-scan@v4
         with:
           tarball: /tmp/image.tar
 ```
@@ -111,18 +103,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       -
-        name: Checkout
-        uses: actions/checkout@v3
-      -
         name: Build
-        uses: docker/build-push-action@v4
+        uses: docker/build-push-action@v6
         with:
-          context: .
           push: true
           tags: user/app:latest
       -
         name: Scan for vulnerabilities
-        uses: crazy-max/ghaction-container-scan@v3
+        uses: crazy-max/ghaction-container-scan@v4
         with:
           image: user/app:latest
           severity_threshold: HIGH
@@ -146,18 +134,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       -
-        name: Checkout
-        uses: actions/checkout@v3
-      -
         name: Build
-        uses: docker/build-push-action@v4
+        uses: docker/build-push-action@v6
         with:
-          context: .
           push: true
           tags: user/app:latest
       -
         name: Scan for vulnerabilities
-        uses: crazy-max/ghaction-container-scan@v3
+        uses: crazy-max/ghaction-container-scan@v4
         with:
           image: user/app:latest
           annotations: true
@@ -184,10 +168,10 @@ jobs:
     steps:
       -
         name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v6
       -
         name: Build
-        uses: docker/build-push-action@v4
+        uses: docker/build-push-action@v6
         with:
           context: .
           push: true
@@ -195,19 +179,20 @@ jobs:
       -
         name: Scan for vulnerabilities
         id: scan
-        uses: crazy-max/ghaction-container-scan@v3
+        uses: crazy-max/ghaction-container-scan@v4
         with:
           image: user/app:latest
           dockerfile: ./Dockerfile
       -
         name: Upload SARIF file
         if: ${{ steps.scan.outputs.sarif != '' }}
-        uses: github/codeql-action/upload-sarif@v2
+        uses: github/codeql-action/upload-sarif@v4
         with:
           sarif_file: ${{ steps.scan.outputs.sarif }}
 ```
 
-> :bulb: `dockerfile` input is required to generate a sarif report.
+> [!NOTE]
+> `dockerfile` input is required to generate a sarif report.
 
 ![GitHub Code Scanning](.github/codeql.png)
 
@@ -225,16 +210,13 @@ jobs:
     steps:
       -
         name: Checkout
-        uses: actions/checkout@v3
-      -
-        name: Set up QEMU
-        uses: docker/setup-qemu-action@v2
+        uses: actions/checkout@v6
       -
         name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2
+        uses: docker/setup-buildx-action@v3
       -
         name: Build and load
-        uses: docker/build-push-action@v4
+        uses: docker/build-push-action@v6
         with:
           context: .
           load: true
@@ -242,13 +224,13 @@ jobs:
       -
         name: Scan for vulnerabilities
         id: scan
-        uses: crazy-max/ghaction-container-scan@v3
+        uses: crazy-max/ghaction-container-scan@v4
         with:
           image: user/app:latest
           dockerfile: ./Dockerfile
       -
         name: Build multi-platform and push
-        uses: docker/build-push-action@v4
+        uses: docker/build-push-action@v6
         with:
           context: .
           platforms: linux/amd64,linux/arm64
@@ -319,7 +301,7 @@ for example that takes around 23GB of disk space:
         run: sudo rm -rf /usr/share/dotnet
       -
         name: Scan for vulnerabilities
-        uses: crazy-max/ghaction-container-scan@v3
+        uses: crazy-max/ghaction-container-scan@v4
         with:
           image: user/app:latest
 ```
@@ -332,7 +314,7 @@ the timeout by setting `TRIVY_TIMEOUT` environment variable:
 ```yaml
       -
         name: Scan for vulnerabilities
-        uses: crazy-max/ghaction-container-scan@v3
+        uses: crazy-max/ghaction-container-scan@v4
         with:
           image: user/app:latest
         env:
@@ -355,13 +337,13 @@ to generate sanitized tags:
 -
   name: Docker meta
   id: meta
-  uses: docker/metadata-action@v4
+  uses: docker/metadata-action@v5
   with:
     images: ghcr.io/${{ github.repository }}
     tags: latest
 -
   name: Build and push
-  uses: docker/build-push-action@v4
+  uses: docker/build-push-action@v6
   with:
     context: .
     push: true
@@ -369,7 +351,7 @@ to generate sanitized tags:
 -
   name: Scan for vulnerabilities
   id: scan
-  uses: crazy-max/ghaction-container-scan@v3
+  uses: crazy-max/ghaction-container-scan@v4
   with:
     image: ${{ fromJSON(steps.meta.outputs.json).tags[0] }}
     dockerfile: ./Dockerfile
@@ -380,14 +362,14 @@ Or a dedicated step to sanitize the slug:
 ```yaml
 -
   name: Sanitize repo slug
-  uses: actions/github-script@v6
+  uses: actions/github-script@v8
   id: repo_slug
   with:
     result-encoding: string
     script: return 'ghcr.io/${{ github.repository }}'.toLowerCase()
 -
   name: Build and push
-  uses: docker/build-push-action@v4
+  uses: docker/build-push-action@v6
   with:
     context: .
     push: true
@@ -395,7 +377,7 @@ Or a dedicated step to sanitize the slug:
 -
   name: Scan for vulnerabilities
   id: scan
-  uses: crazy-max/ghaction-container-scan@v3
+  uses: crazy-max/ghaction-container-scan@v4
   with:
     image: ${{ steps.repo_slug.outputs.result }}:latest
     dockerfile: ./Dockerfile
