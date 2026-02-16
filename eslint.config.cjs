@@ -3,6 +3,7 @@ const {defineConfig, globalIgnores} = require('eslint/config');
 const {fixupConfigRules, fixupPluginRules} = require('@eslint/compat');
 const typescriptEslint = require('@typescript-eslint/eslint-plugin');
 const prettier = require('eslint-plugin-prettier');
+const vitest = require('@vitest/eslint-plugin');
 const globals = require('globals');
 const tsParser = require('@typescript-eslint/parser');
 const js = require('@eslint/js');
@@ -16,25 +17,34 @@ const compat = new FlatCompat({
 });
 
 module.exports = defineConfig([
-  globalIgnores(['.yarn/**/*', 'coverage/**/*', 'dist/**/*', 'node_modules/**/*']),
+  globalIgnores([
+    // prettier-ignore
+    '.yarn/**/*',
+    'coverage/**/*',
+    'dist/**/*'
+  ]),
   {
-    extends: fixupConfigRules(compat.extends('eslint:recommended', 'plugin:@typescript-eslint/eslint-recommended', 'plugin:@typescript-eslint/recommended', 'plugin:prettier/recommended')),
-
+    extends: fixupConfigRules(
+      compat.extends(
+        // prettier-ignore
+        'eslint:recommended',
+        'plugin:@typescript-eslint/eslint-recommended',
+        'plugin:@typescript-eslint/recommended',
+        'plugin:prettier/recommended'
+      )
+    ),
     plugins: {
       '@typescript-eslint': fixupPluginRules(typescriptEslint),
       prettier: fixupPluginRules(prettier)
     },
-
     languageOptions: {
       globals: {
-        ...globals.node,
-        ...globals.mocha
+        ...globals.node
       },
       parser: tsParser,
       ecmaVersion: 2023,
       sourceType: 'module'
     },
-
     rules: {
       '@typescript-eslint/no-require-imports': [
         'error',
@@ -43,5 +53,9 @@ module.exports = defineConfig([
         }
       ]
     }
+  },
+  {
+    files: ['tests/**'],
+    ...vitest.configs.recommended
   }
 ]);

@@ -2,9 +2,9 @@ import {describe, expect, it, test} from 'vitest';
 import * as fs from 'fs';
 import * as path from 'path';
 import * as semver from 'semver';
-import * as trivy from '../src/trivy';
+import * as trivy from '../src/trivy.js';
 
-const fixturesDir = path.join(process.cwd(), '__tests__', 'fixtures');
+const fixturesDir = path.join(process.cwd(), 'tests', 'fixtures');
 
 describe('getVersion', () => {
   it('valid', async () => {

@@ -58,7 +58,7 @@ jobs:
         name: Build
         uses: docker/build-push-action@v6
         with:
-          context: ./test
+          context: ./tests/fixtures
           outputs: type=docker,dest=/tmp/image.tar
           tags: name/app:latest
           provenance: false
@@ -85,7 +85,7 @@ jobs:
         name: Build
         uses: docker/build-push-action@v6
         with:
-          context: ./test
+          context: ./tests/fixtures
           outputs: type=docker,dest=/tmp/image.tar
           tags: name/app:latest
           provenance: false
@@ -95,7 +95,7 @@ jobs:
         uses: ./
         with:
           tarball: /tmp/image.tar
-          dockerfile: ./test/Dockerfile
+          dockerfile: ./tests/fixtures/Dockerfile
       -
         name: SARIF result
         run: cat ${{ steps.scan.outputs.sarif }}
@@ -186,8 +186,7 @@ jobs:
         name: Build and load
         uses: docker/build-push-action@v6
         with:
-          context: ./test
-          file: ./test/Dockerfile
+          context: ./tests/fixtures
           load: true
           tags: ${{ steps.meta.outputs.tags }}
       -
@@ -195,13 +194,12 @@ jobs:
         uses: ./
         with:
           image: ${{ env.REPO_SLUG }}:${{ steps.meta.outputs.version }}
-          dockerfile: ./test/Dockerfile
+          dockerfile: ./tests/fixtures/Dockerfile
       -
         name: Build multi-platform and push
         uses: docker/build-push-action@v6
         with:
-          context: ./test
-          file: ./test/Dockerfile
+          context: ./tests/fixtures
           platforms: linux/amd64,linux/arm64
           push: true
           tags: ${{ steps.meta.outputs.tags }}

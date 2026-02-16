@@ -9,13 +9,9 @@
     "outDir": "./lib",
     "rootDir": "./src",
     "forceConsistentCasingInFileNames": true,
-    "noImplicitAny": false,
-    "resolveJsonModule": true,
-    "useUnknownInCatchVariables": false,
+    "resolveJsonModule": true
   },
-  "exclude": [
-    "./__tests__/**/*",
-    "./vitest.config.ts",
-    "node_modules"
+  "include": [
+    "src/**/*.ts"
   ]
 }
