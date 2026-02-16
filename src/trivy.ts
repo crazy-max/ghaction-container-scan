@@ -1,4 +1,4 @@
-import fs from 'fs';
+import * as fs from 'fs';
 import * as path from 'path';
 import * as semver from 'semver';
 import * as util from 'util';
