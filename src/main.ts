@@ -1,7 +1,7 @@
 process.env.FORCE_COLOR = '2';
 
 import chalk from 'chalk';
-import fs from 'fs';
+import * as fs from 'fs';
 import * as context from './context.js';
 import * as trivy from './trivy.js';
 import * as stateHelper from './state-helper.js';

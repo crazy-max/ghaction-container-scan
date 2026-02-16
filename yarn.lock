@@ -773,6 +773,22 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/lodash.truncate@npm:^4.4.9":
+  version: 4.4.9
+  resolution: "@types/lodash.truncate@npm:4.4.9"
+  dependencies:
+    "@types/lodash": "npm:*"
+  checksum: 10/8c48ddd3d6a79522a6470c57c0061dd716c1479477caae05b02206914896f356afba9d1d89935dd3bbbd7df6fc116440af50dc842926b141175de1bfecfe351d
+  languageName: node
+  linkType: hard
+
+"@types/lodash@npm:*":
+  version: 4.17.23
+  resolution: "@types/lodash@npm:4.17.23"
+  checksum: 10/05935534a44aadef67c2158b2fb4a042a226970088106a40ddc67e4f063783149fe5cf02279d7dd4a1e72c98d9189b9430face659645dbf77270f8c4c3e387f5
+  languageName: node
+  linkType: hard
+
 "@types/node@npm:^25.2.3":
   version: 25.2.3
   resolution: "@types/node@npm:25.2.3"
@@ -1360,6 +1376,7 @@ __metadata:
     "@eslint/compat": "npm:^2.0.2"
     "@eslint/eslintrc": "npm:^3.3.3"
     "@eslint/js": "npm:^9.39.2"
+    "@types/lodash.truncate": "npm:^4.4.9"
     "@types/node": "npm:^25.2.3"
     "@types/semver": "npm:^7.7.1"
     "@types/tmp": "npm:^0.2.6"

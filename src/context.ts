@@ -1,6 +1,6 @@
-import fs from 'fs';
+import * as fs from 'fs';
 import * as os from 'os';
-import path from 'path';
+import * as path from 'path';
 import * as tmp from 'tmp';
 import * as core from '@actions/core';
 
