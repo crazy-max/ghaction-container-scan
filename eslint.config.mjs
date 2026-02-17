@@ -4,6 +4,7 @@ import tseslint from '@typescript-eslint/eslint-plugin';
 import vitest from '@vitest/eslint-plugin';
 import globals from 'globals';
 import eslintConfigPrettier from 'eslint-config-prettier/flat';
+import eslintPluginPrettier from 'eslint-plugin-prettier';
 
 export default defineConfig([
   {
@@ -29,7 +30,11 @@ export default defineConfig([
     }
   },
   {
+    plugins: {
+      prettier: eslintPluginPrettier
+    },
     rules: {
+      'prettier/prettier': 'error',
       '@typescript-eslint/no-require-imports': [
         'error',
         {

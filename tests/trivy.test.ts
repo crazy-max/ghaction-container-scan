@@ -54,8 +54,8 @@ describe('getRelease', () => {
     expect(release?.html_url).toEqual('https://github.com/aquasecurity/trivy/releases/tag/v0.19.2');
   });
 
-  it('unknown release', async () => {
-    await expect(trivy.getRelease('foo')).rejects.toThrow(new Error('Cannot find Trivy release foo in https://raw.githubusercontent.com/crazy-max/ghaction-container-scan/master/.github/trivy-releases.json'));
+  it('unknown release', () => {
+    return expect(trivy.getRelease('foo')).rejects.toThrow(new Error('Cannot find Trivy release foo in https://raw.githubusercontent.com/crazy-max/ghaction-container-scan/master/.github/trivy-releases.json'));
   });
 });
 
