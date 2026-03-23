@@ -56,7 +56,7 @@ jobs:
         uses: docker/setup-buildx-action@v3
       -
         name: Build
-        uses: docker/build-push-action@v6
+        uses: docker/build-push-action@v7
         with:
           context: ./tests/fixtures
           outputs: type=docker,dest=/tmp/image.tar
@@ -83,7 +83,7 @@ jobs:
         uses: docker/setup-buildx-action@v3
       -
         name: Build
-        uses: docker/build-push-action@v6
+        uses: docker/build-push-action@v7
         with:
           context: ./tests/fixtures
           outputs: type=docker,dest=/tmp/image.tar
@@ -184,7 +184,7 @@ jobs:
           driver-opts: network=host
       -
         name: Build and load
-        uses: docker/build-push-action@v6
+        uses: docker/build-push-action@v7
         with:
           context: ./tests/fixtures
           load: true
@@ -197,7 +197,7 @@ jobs:
           dockerfile: ./tests/fixtures/Dockerfile
       -
         name: Build multi-platform and push
-        uses: docker/build-push-action@v6
+        uses: docker/build-push-action@v7
         with:
           context: ./tests/fixtures
           platforms: linux/amd64,linux/arm64
