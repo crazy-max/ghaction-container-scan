@@ -19,7 +19,7 @@ on:
 
 jobs:
   generate:
-    uses: crazy-max/.github/.github/workflows/releases-json.yml@fa6141aedf23596fb8bdcceab9cce8dadaa31bd9
+    uses: crazy-max/.github/.github/workflows/releases-json.yml@20ef82212dc54bab5749f5e05576ca6d3c8a5773
     with:
       repository: aquasecurity/trivy
       artifact_name: trivy-releases-json
