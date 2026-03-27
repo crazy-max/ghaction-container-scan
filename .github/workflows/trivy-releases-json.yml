@@ -4,7 +4,6 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
-# https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#permissions
 permissions:
   contents: read
 
@@ -19,18 +18,16 @@ on:
 
 jobs:
   generate:
-    uses: crazy-max/.github/.github/workflows/releases-json.yml@fa6141aedf23596fb8bdcceab9cce8dadaa31bd9
+    uses: crazy-max/.github/.github/workflows/releases-json.yml@bbd31df64ee0f097a02f12495f541f9236f18c46 # v1.2.0
     with:
       repository: aquasecurity/trivy
       artifact_name: trivy-releases-json
       filename: trivy-releases.json
-    secrets: inherit
 
   open-pr:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
     if: github.event_name != 'pull_request'
     permissions:
-      # required to create PR
       contents: write
       pull-requests: write
     needs:
@@ -38,10 +35,10 @@ jobs:
     steps:
       -
         name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
       -
         name: Download
-        uses: actions/download-artifact@v8
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
         with:
           name: trivy-releases-json
           path: .github
