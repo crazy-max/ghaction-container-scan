@@ -26,7 +26,7 @@
   "license": "MIT",
   "packageManager": "yarn@4.17.0",
   "dependencies": {
-    "@actions/core": "^3.0.0",
+    "@actions/core": "^3.0.1",
     "@actions/exec": "^3.0.0",
     "@actions/http-client": "^4.0.0",
     "@actions/tool-cache": "^4.0.0",
