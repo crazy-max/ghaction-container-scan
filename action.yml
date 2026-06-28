@@ -21,7 +21,7 @@ inputs:
     description: 'Dockerfile required to generate a sarif report'
     required: false
   severity:
-    description: 'Report vulnerabilities of provided level or higher (default: UNKNOWN,LOW,MEDIUM,HIGH,CRITICAL)'
+    description: 'List of severity level(s) to report (default: UNKNOWN,LOW,MEDIUM,HIGH,CRITICAL)'
     required: false
   severity_threshold:
     description: 'Defines threshold for severity'
