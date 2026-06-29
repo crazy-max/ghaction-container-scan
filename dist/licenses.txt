@@ -135,11 +135,12 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 -----------
 
-The following npm package may be included in this product:
+The following npm packages may be included in this product:
 
  - semver@7.7.4
+ - semver@7.8.5
 
-This package contains the following license:
+These packages each contain the following license:
 
 The ISC License
 
