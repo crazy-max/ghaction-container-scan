@@ -20,7 +20,7 @@ on:
 
 jobs:
   image:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     strategy:
       fail-fast: false
       matrix:
@@ -43,7 +43,7 @@ jobs:
         run: cat ${{ steps.scan.outputs.json }}
 
   tarball:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     steps:
       -
         name: Checkout
@@ -70,7 +70,7 @@ jobs:
         run: cat ${{ steps.scan.outputs.json }}
 
   sarif:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     steps:
       -
         name: Checkout
@@ -98,7 +98,7 @@ jobs:
         run: cat ${{ steps.scan.outputs.sarif }}
 
   annotations:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     strategy:
       fail-fast: false
       matrix:
@@ -118,7 +118,7 @@ jobs:
           annotations: true
 
   ignore_unfixed:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     steps:
       -
         name: Checkout
@@ -131,7 +131,7 @@ jobs:
           ignore_unfixed: true
 
   threshold:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     strategy:
       fail-fast: false
       matrix:
@@ -153,7 +153,7 @@ jobs:
           severity_threshold: HIGH
 
   build-scan-push:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     services:
       registry:
         image: registry:2.8.3@sha256:a3d8aaa63ed8681a604f1dea0aa03f100d5895b6a58ace528858a7b332415373
