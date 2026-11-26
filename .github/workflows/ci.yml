@@ -156,7 +156,7 @@ jobs:
     runs-on: ubuntu-26.04
     services:
       registry:
-        image: registry:2.8.3@sha256:a3d8aaa63ed8681a604f1dea0aa03f100d5895b6a58ace528858a7b332415373
+        image: registry:3.1.2@sha256:82f6ff4a7f982960c8aa51617fea3aabc485df6e55cce80d22deb1de36f1bc3c
         ports:
           - 5000:5000
     env:
