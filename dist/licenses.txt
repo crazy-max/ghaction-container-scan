@@ -1,12 +1,11 @@
 This file was generated with the generate-license-file npm package!
 https://www.npmjs.com/package/generate-license-file
 
-The following npm packages may be included in this product:
+The following npm package may be included in this product:
 
- - @actions/http-client@4.0.0
  - @actions/http-client@4.0.1
 
-These packages each contain the following license:
+This package contains the following license:
 
 Actions Http Client for Node.js
 
@@ -90,7 +89,7 @@ terms above.
 
 The following npm package may be included in this product:
 
- - undici@6.27.0
+ - undici@6.29.1
 
 This package contains the following license:
 
@@ -136,12 +135,11 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 -----------
 
-The following npm packages may be included in this product:
+The following npm package may be included in this product:
 
- - semver@7.7.4
  - semver@7.8.6
 
-These packages each contain the following license:
+This package contains the following license:
 
 The ISC License
 
@@ -223,7 +221,6 @@ SOFTWARE.
 
 The following npm packages may be included in this product:
 
- - @actions/core@3.0.0
  - @actions/core@3.0.1
  - @actions/exec@3.0.0
  - @actions/io@3.0.2
